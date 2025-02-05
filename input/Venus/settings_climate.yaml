@@ -1,0 +1,19 @@
+atmosphere-grid:
+  number-of-layers: 50
+  
+planet:
+  planet-mass: 4.867e27
+  planet-radius: 6.0518e8
+  surface-albedo: 0.1
+  number-of-zenith-angles: 4
+  photon-scale-factor: 1.93
+
+optical-properties:
+  ir:
+    k-method: RandomOverlapResortRebin
+    opacities: {k-distributions: on, CIA: on, rayleigh: on, photolysis-xs: on,
+    particle-xs: [{name: HCaer, data: khare1984}, {name: H2SO4aer, data: palmer1975}]}
+  solar:
+    k-method: RandomOverlapResortRebin
+    opacities: {k-distributions: on, CIA: on, rayleigh: on, photolysis-xs: on,
+    particle-xs: [{name: HCaer, data: khare1984}, {name: H2SO4aer, data: palmer1975}]}
