@@ -1,15 +1,15 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-import utils
 import venus
+from photochem.clima import AdiabatClimate
 
 from threadpoolctl import threadpool_limits
 _ = threadpool_limits(limits=4)
 
 def climate(pc, clouds=True):
 
-    c = utils.AdiabatClimateRobust(
+    c = AdiabatClimate(
         'input/species_climate.yaml', 
         'input/Venus/settings_climate.yaml', 
         'input/SunNow.txt',
