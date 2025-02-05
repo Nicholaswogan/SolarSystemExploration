@@ -1,2 +1,4 @@
 .DS_Store
 planetary_atmosphere_observations
+.ipynb_checkpoints
+__pycache__
