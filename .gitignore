@@ -2,3 +2,4 @@
 planetary_atmosphere_observations
 .ipynb_checkpoints
 __pycache__
+*.ipynb
