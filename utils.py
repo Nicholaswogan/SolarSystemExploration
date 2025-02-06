@@ -8,6 +8,8 @@ from photochem import EvoAtmosphere, PhotoException
 from tempfile import NamedTemporaryFile
 from photochem.clima import AdiabatClimate
 import yaml
+import re
+from planetary_atmosphere_observations.utils import retrieve_species
 
 class RobustData():
     
@@ -284,3 +286,48 @@ class AdiabatClimateRobust(AdiabatClimate):
                         f3.name,
                         self.data_dir
                     )
+
+def species_to_latex(sp):
+    sp1 = re.sub(r'([0-9]+)', r"_\1", sp)
+    sp1 = r'$\mathrm{'+sp1+'}$'
+    if sp == 'O1D':
+        sp1 = r'$\mathrm{O(^1D)}$'
+    elif sp == 'N2D':
+        sp1 = r'$\mathrm{N(^2D)}$'
+    elif sp == '1CH2':
+        sp1 = r'$\mathrm{^1CH_2}$'
+    elif sp == 'H2SO4aer':
+        sp1 = r'H$_2$SO$_2$ cloud'
+    return sp1
+
+def add_data_to_figure(sp, dat, ax, default_error = None, **kwargs):
+    if sp in dat:
+        entry = retrieve_species(sp, dat)
+        for j,en in enumerate(entry):
+            for jj in range(len(en['mix'])):  
+                mix = en['mix'][jj]
+                alt = en['alt'][jj]
+                xerr = en['mix-err'][:,jj].reshape((2,1))
+                yerr = en['alt-err'][:,jj].reshape((2,1))
+                if xerr[0,0] == mix:
+                    ax.errorbar(mix, alt, yerr=yerr, xerr=10.0**(np.log10(mix)-0.1), xuplims=[True],**kwargs)
+                elif np.all(xerr.flatten() == np.array([0,0])) and default_error is not None:
+                    low = mix - 10.0**(np.log10(mix)-default_error)
+                    high = 10.0**(np.log10(mix)+default_error) - mix
+                    xerr = np.array([low, high]).reshape((2,1))
+                    ax.errorbar(mix,alt,xerr=xerr,yerr=yerr,**kwargs)
+                else:
+                    ax.errorbar(mix,alt,xerr=xerr,yerr=yerr,**kwargs)
+
+def plot_PT(c, ax, lwc=3, **kwargs):
+    T = np.append(c.T_surf,c.T)
+    z = np.append(c.P_surf,c.P)/1e6
+    p = ax.plot(T, z, **kwargs)
+    for a in ['lw','ls','color','label']:
+        if a in kwargs:
+            kwargs.pop(a)
+    color = p[0].get_color()
+    for i in range(len(c.convecting_with_below)):
+        j = i+1
+        if c.convecting_with_below[i]:
+            ax.plot(T[j-1:j+1],z[j-1:j+1], lw=lwc, ls='-', color=color, **kwargs)

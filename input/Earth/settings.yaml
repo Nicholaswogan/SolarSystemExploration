@@ -1,0 +1,88 @@
+
+atmosphere-grid:
+  bottom: 0.0 # cm
+  top: 1.0e7 # cm
+  number-of-layers: 100
+
+planet:
+  planet-mass: 5.972e27
+  planet-radius: 6.371e8
+  surface-albedo: 0.2
+  solar-zenith-angle: 60.0
+  hydrogen-escape: {type: diffusion limited}
+  water:
+    fix-water-in-troposphere: false 
+    gas-rainout: true
+    rainfall-rate: 1
+    tropopause-altitude: 1.1e6
+    water-condensation: false
+    
+particles:
+- {name: H2Oaer, RH-condensation: 0.5}
+    
+
+boundary-conditions:
+# Fixed surface pressures based on 1.013 bar total.
+- name: H2O
+  lower-boundary: {type: press, press: 270.0e6}
+  upper-boundary: {type: veff, veff: 0.0}
+- name: N2
+  lower-boundary: {type: press, press: 7.90140e+05} # 78%
+  upper-boundary: {type: veff, veff: 0.0}
+- name: O2
+  lower-boundary: {type: press, press: 2.12730e+05} # 21%
+  upper-boundary: {type: veff, veff: 0.0}
+- name: CO2
+  lower-boundary: {type: press, press: 4.05200e+02} # 400 ppm
+  upper-boundary: {type: veff, veff: 0.0}
+
+# Nominal values from Catling et al. (2010)
+- name: HCl
+  lower-boundary: {type: vdep + dist flux, vdep: 0.02, flux: 1.0e8, height: -1}
+  upper-boundary: {type: veff, veff: 0.0}
+
+# Surface fluxes based on Tsai et al. (2021), Table 2, which itself is based on
+# a number of references (Hauglustaine et al 1994, Smithson 2001, Seinfeld and 
+# Pandis 2016 and Li et al. 2003)
+- name: CO
+  lower-boundary: {type: vdep + dist flux, vdep: 0.03, flux: 3.7e11, height: -1.0}
+  upper-boundary: {type: veff, veff: 0.0}
+- name: CH4
+  lower-boundary: {type: flux, flux: 1.6e11}
+  upper-boundary: {type: veff, veff: 0.0}
+- name: "NO"
+  lower-boundary: {type: vdep + dist flux, vdep: 0.001, flux: 1.3e10, height: -1.0}
+  upper-boundary: {type: veff, veff: 0.0}
+- name: N2O
+  lower-boundary: {type: vdep + dist flux, vdep:  0.0001, flux: 2.3e9, height: -1.0}
+  upper-boundary: {type: veff, veff: 0.0}
+- name: NH3
+  lower-boundary: {type: vdep + dist flux, vdep: 1, flux: 1.5e9, height: -1.0}
+  upper-boundary: {type: veff, veff: 0.0}
+- name: NO2
+  lower-boundary: {type: vdep, vdep: 0.01}
+  upper-boundary: {type: veff, veff: 0.0}
+- name: NO3
+  lower-boundary: {type: vdep, vdep: 0.1}
+  upper-boundary: {type: veff, veff: 0.0}
+- name: SO2
+  lower-boundary: {type: vdep + dist flux, vdep: 1, flux: 9e9, height: -1.0}
+  upper-boundary: {type: veff, veff: 0.0}
+- name: H2S
+  lower-boundary: {type: vdep + dist flux, vdep: 0.015, flux: 2e8, height: -1.0}
+  upper-boundary: {type: veff, veff: 0.0}
+- name: OCS
+  lower-boundary: {type: vdep + dist flux, vdep: 0.003, flux: 5.4e7, height: -1.0}
+  upper-boundary: {type: veff, veff: 0.0}
+- name: H2SO4
+  lower-boundary: {type: vdep + dist flux, vdep: 1, flux: 7e8, height: -1.0}
+  upper-boundary: {type: veff, veff: 0.0}
+- name: HCN
+  lower-boundary: {type: vdep + dist flux, vdep: 0.13, flux: 1.7e8, height: -1.0}
+  upper-boundary: {type: veff, veff: 0.0}
+- name: CH3CN
+  lower-boundary: {type: vdep + dist flux, vdep: 0.13, flux: 1.3e8, height: -1.0}
+  upper-boundary: {type: veff, veff: 0.0}
+- name: HNO3
+  lower-boundary: {type: vdep, vdep: 4}
+  upper-boundary: {type: veff, veff: 0.0}

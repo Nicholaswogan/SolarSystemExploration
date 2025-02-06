@@ -5,6 +5,7 @@ import requests
 import zipfile
 import io
 import os
+import shutil
 
 def create_stellar_fluxes():
     _ = stars.solar_spectrum(
@@ -13,11 +14,14 @@ def create_stellar_fluxes():
     )
 
 def get_solarsystem_observations():
-    url = 'https://github.com/Nicholaswogan/planetary_atmosphere_observations/archive/c4eb1cb15a45300a555951334ec6e0dfb5f81f5c.zip'
+    if os.path.isdir('planetary_atmosphere_observations'):
+        shutil.rmtree('planetary_atmosphere_observations')
+    commit = 'f09a62d30e38b4758ae95994e887decaf9f6ce6b'
+    url = 'https://github.com/Nicholaswogan/planetary_atmosphere_observations/archive/'+commit+'.zip'
     r = requests.get(url)
     z = zipfile.ZipFile(io.BytesIO(r.content))
     z.extractall("./")
-    os.rename('planetary_atmosphere_observations-c4eb1cb15a45300a555951334ec6e0dfb5f81f5c','planetary_atmosphere_observations')
+    os.rename('planetary_atmosphere_observations-'+commit,'planetary_atmosphere_observations')
 
 def reaction_mechanisms_venus():
     with open('input/zahnle_earth.yaml','r') as f:
@@ -32,7 +36,10 @@ def reaction_mechanisms_venus():
     with open('input/Venus/zahnle_earth_no_cloud_opacity.yaml', 'w') as f:
         yaml.dump(dat,f,Dumper=MyDumper,sort_keys=False,width=70)
 
-if __name__ == '__main__':
-    # create_stellar_fluxes()
-    # get_solarsystem_observations()
+def main():
+    create_stellar_fluxes()
+    get_solarsystem_observations()
     reaction_mechanisms_venus()
+
+if __name__ == '__main__':
+    main()

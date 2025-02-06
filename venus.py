@@ -1,11 +1,10 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from utils import EvoAtmosphereRobust
+from utils import EvoAtmosphereRobust, add_data_to_figure
 from photochem.equilibrate import ChemEquiAnalysis
 import yaml
 from photochem.utils import stars
 from photochem.clima import rebin
-from planetary_atmosphere_observations.utils import retrieve_species
 
 def cloud_optical_properties(z, P):
 
@@ -267,22 +266,6 @@ def equilibrate_layers(pc):
 
     return eqmix
 
-def add_data_to_figure(sp, venus, ax, **kwargs):
-    if sp in venus:
-        entry = retrieve_species(sp, venus)
-        for j,en in enumerate(entry):
-            for jj in range(len(en['mix'])):  
-                mix = en['mix'][jj]
-                alt = en['alt'][jj]
-                xerr = en['mix-err'][:,jj].reshape((2,1))
-                yerr = en['alt-err'][:,jj].reshape((2,1))
-                if xerr[0,0] == mix:
-                    ax.errorbar(mix, alt, yerr=yerr, xerr=10.0**(np.log10(mix)-0.1), xuplims=[True], 
-                            **kwargs)
-                else:
-                    ax.errorbar(mix,alt,xerr=xerr,yerr=yerr,\
-                            **kwargs)
-
 def plot(pc, outfile):
 
     with open('planetary_atmosphere_observations/Venus.yaml','r') as f:
@@ -355,7 +338,7 @@ def main():
         clouds=False
     )
     assert pc.find_steady_state()
-    pc.out2atmosphere_txt('results/Venus/atmosphere.txt')
+    pc.out2atmosphere_txt('results/Venus/atmosphere.txt',overwrite=True)
 
     # Plot 
     plot(pc, 'figures/venus.png')
@@ -369,7 +352,7 @@ def main():
         atol=1e-19
     )
     assert pc1.find_steady_state()
-    pc1.out2atmosphere_txt('results/Venus/atmosphere_crisp_cloud.txt')
+    pc1.out2atmosphere_txt('results/Venus/atmosphere_crisp_cloud.txt',overwrite=True)
 
 
 if __name__ == '__main__':
