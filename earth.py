@@ -103,9 +103,9 @@ def plot(pc):
     plt.savefig('figures/earth.png',dpi=300,bbox_inches = 'tight')
 
 def main():
-    pc = initialize(atmosphere_file='results/Earth/atmosphere.txt')
-    # assert pc.find_steady_state()
-    # pc.out2atmosphere_txt('results/Earth/atmosphere.txt',overwrite=True)
+    pc = initialize()
+    assert pc.find_steady_state()
+    pc.out2atmosphere_txt('results/Earth/atmosphere.txt',overwrite=True)
 
     plot(pc)
 

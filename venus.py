@@ -343,7 +343,6 @@ def main():
     # Plot 
     plot(pc, 'figures/venus.png')
 
-
     # Crisp cloud for comparison
     pc1 = initialize(
         reaction_file='input/Venus/zahnle_earth_no_cloud_opacity.yaml',
