@@ -35,10 +35,10 @@ def reaction_mechanisms():
     with open('input/Venus/zahnle_earth_no_cloud_opacity.yaml', 'w') as f:
         yaml.dump(dat,f,Dumper=MyDumper,sort_keys=False,width=70)
 
-    # Mars
+    # Mars and Titan
     resave_mechanism_with_atoms(
         'input/zahnle_earth.yaml',
-        'input/Mars/zahnle_earth_HNOC.yaml',
+        'input/zahnle_earth_HNOC.yaml',
         ['H','O','N','C']
     )
 

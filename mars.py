@@ -39,7 +39,7 @@ def get_zTKzzmix():
 def initialize(atmosphere_file=None):
     
     pc = utils.EvoAtmosphereRobust(
-        'input/Mars/zahnle_earth_HNOC.yaml',
+        'input/zahnle_earth_HNOC.yaml',
         'input/Mars/settings.yaml',
         'input/SunNow.txt',
         atmosphere_file='results/Mars/atmosphere.txt',
