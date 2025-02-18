@@ -1,0 +1,38 @@
+
+atmosphere-grid:
+  bottom: 0.0
+  top: atmospherefile
+  number-of-layers: 200
+
+planet:
+  planet-mass: 1.3452e26
+  planet-radius: 2.5747e8
+  surface-albedo: 0.1
+  solar-zenith-angle: 60.0
+  photon-scale-factor: 0.01112
+  hydrogen-escape: {type: diffusion limited}
+  water: {fix-water-in-troposphere: false, gas-rainout: false, water-condensation: false}
+
+# To make the CH4 profile be correct
+particles:
+- {name: CH4aer, RH-condensation: 1.7}
+
+# Generally follows Loison et al. (2015)
+boundary-conditions:
+- name: N2
+  lower-boundary: {type: press, press: 1.5e6}
+  upper-boundary: {type: veff, veff: 0.0}
+- name: CH4
+  lower-boundary: {type: press, press: 10.0e6} # Set by SVP
+  upper-boundary: {type: veff, veff: 0.0}
+- name: CO
+  lower-boundary: {type: press, press: 76.5} # VMR = 5.1e-5
+  upper-boundary: {type: veff, veff: 0.0}
+
+# Both follows Loison et al. (2015)
+- name: O
+  lower-boundary: {type: vdep, vdep: 0.0}
+  upper-boundary: {type: flux, flux: -5e6}
+- name: OH
+  lower-boundary: {type: vdep, vdep: 0.0}
+  upper-boundary: {type: flux, flux: -5e6}

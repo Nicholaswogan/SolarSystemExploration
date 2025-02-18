@@ -10,6 +10,18 @@ from photochem.clima import AdiabatClimate
 import yaml
 import re
 
+MyLoader = yaml.SafeLoader
+MyLoader.add_implicit_resolver(
+    u'tag:yaml.org,2002:float',
+    re.compile(u'''^(?:
+     [-+]?(?:[0-9][0-9_]*)\\.[0-9_]*(?:[eE][-+]?[0-9]+)?
+    |[-+]?(?:[0-9][0-9_]*)(?:[eE][-+]?[0-9]+)
+    |\\.[0-9_]+(?:[eE][-+][0-9]+)?
+    |[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*
+    |[-+]?\\.(?:inf|Inf|INF)
+    |\\.(?:nan|NaN|NAN))$''', re.X),
+    list(u'-+0123456789.'))
+
 class RobustData():
     
     def __init__(self):
@@ -146,7 +158,7 @@ class EvoAtmosphereRobust(EvoAtmosphere):
                     break
 
             # If converged, then return
-            if tn > self.var.equilibrium_time:
+            if self.wrk.tn > self.var.equilibrium_time:
                 converged = True
                 break
 

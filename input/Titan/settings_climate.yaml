@@ -1,0 +1,19 @@
+atmosphere-grid:
+  number-of-layers: 50
+  
+planet:
+  planet-mass: 1.3452e26
+  planet-radius: 2.5747e8
+  surface-albedo: 0.1 # Mckay et al. (1989), Table 1
+  number-of-zenith-angles: 4
+  photon-scale-factor: 0.01112
+
+optical-properties:
+  ir:
+    k-method: RandomOverlapResortRebin
+    opacities: {k-distributions: on, CIA: on, rayleigh: on, photolysis-xs: on,
+    particle-xs: [{name: HCaer, data: khare1984frac}, {name: H2SO4aer, data: palmer1975}]}
+  solar:
+    k-method: RandomOverlapResortRebin
+    opacities: {k-distributions: on, CIA: on, rayleigh: on, photolysis-xs: on,
+    particle-xs: [{name: HCaer, data: khare1984frac}, {name: H2SO4aer, data: palmer1975}]}
