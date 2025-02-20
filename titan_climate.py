@@ -85,13 +85,13 @@ def plot(c1, c2, c3):
     fig,ax = plt.subplots(1,1,figsize=[5,4])
 
     c = c1
-    utils.plot_PT(c, ax, lwc=2, color='k', lw=2, ls='--', label='Model')
+    utils.plot_PT(c, ax, lwc=2, color='k', lw=2, ls='--', label='Predicted')
 
     c = c2
-    utils.plot_PT(c , ax, lwc=2, color='0.6', lw=2, ls='--', label='Model (w/o haze)')
+    utils.plot_PT(c , ax, lwc=2, color='0.6', lw=2, ls='--', label='Predicted (w/o haze)')
 
     c = c3
-    utils.plot_PT(c , ax, lwc=2, color='C0', lw=2, ls='--', label='Model (w/o C$_2$H$_6$)')
+    utils.plot_PT(c , ax, lwc=2, color='C0', lw=2, ls='--', label='Predicted (w/o C$_2$H$_6$)')
 
     dat = np.loadtxt('input/Titan/Waite2013Model.txt',skiprows=1)
     rho = dat[:,3]
@@ -109,7 +109,7 @@ def plot(c1, c2, c3):
     ax.grid(alpha=0.4)
     ax.set_xlabel('Temperature (K)')
     ax.set_ylabel('Pressure (bar)')
-    ax.legend(ncol=1,bbox_to_anchor=(.01, 0.99), loc='upper left',fontsize=12)
+    ax.legend(ncol=1,bbox_to_anchor=(.01, 0.99), loc='upper left',fontsize=11)
 
     # Put altitude on other axis
     ax1 = ax.twinx()

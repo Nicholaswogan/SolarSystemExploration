@@ -58,13 +58,13 @@ def plot(c1, c2):
     fig,ax = plt.subplots(1,1,figsize=[5,4])
 
     c = c1
-    plot_PT(c, ax, lwc=2, color='k', lw=2, ls='--', label='Predicted (w/ clouds)')
+    plot_PT(c, ax, lwc=2, color='k', lw=2, ls='--', label='Predicted')
 
     c = c2
     plot_PT(c, ax, lwc=2, color='0.6', lw=2, ls='--', label='Predicted (w/o clouds)')
 
     z, T, P = np.loadtxt('input/venus/venus_seiff1985.txt',skiprows=2).T
-    ax.plot(T, P , color='C3', lw=2, ls=':', label='Observed (Seiff+1985)')
+    ax.plot(T, P , color='C3', lw=2, ls=':', label='VIRA')
 
     ax.set_yscale('log')
     ax.invert_yaxis()

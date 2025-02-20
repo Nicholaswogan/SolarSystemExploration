@@ -266,12 +266,13 @@ def equilibrate_layers(pc):
 
     return eqmix
 
-def plot(pc, outfile):
+def plot(pc, pc1, outfile):
 
     with open('planetary_atmosphere_observations/Venus.yaml','r') as f:
         dat = yaml.load(f,Loader=yaml.Loader)
 
     sol = pc.mole_fraction_dict()
+    sol1 = pc1.mole_fraction_dict()
     eqmix = equilibrate_layers(pc)
 
     plt.rcParams.update({'font.size': 12})
@@ -285,7 +286,7 @@ def plot(pc, outfile):
 
     species = ['SO2','H2O','CO','OCS','HCl','H2S','S3','S4','O2','H2SO4','H2SO4aer','SO']
     labels = ['SO$_2$','H$_2$O','CO','OCS','HCl','H$_2$S','S$_3$','S$_4$','O$_2$','H$_2$SO$_4$','H$_2$SO$_4$ cloud','SO']
-    colors = ['C5', 'C0', 'C4', 'C6', 'C7', 'C8', 'C9','C10','C6','C11','C12','C13']
+    colors = ['C5', 'C0', 'C4', 'C6', 'C7', 'C8', 'C9','C10','C5','C11','C12','C13']
     fig_letter = ['(a)','(b)','(c)','(d)','(e)','(f)','(g)','(h)','(i)','(j)','(k)','(l)']
     xlabel = [0.02]*6 + [0.85]*6
     ylabel = [.98]*12
@@ -296,9 +297,9 @@ def plot(pc, outfile):
             continue
         ax = axx[i]
         ax.plot(sol[sp],sol['alt']/1e5,label=labels[i], c=colors[i], lw=2, alpha=1)
-        # ax.plot(sol1[sp],sol1['alt']/1e5,label=sp, c='C'+str(i), lw=2, alpha=1, ls='--')
+        ax.plot(sol1[sp],sol1['alt']/1e5,label=labels[i], c=colors[i], lw=2, alpha=1,ls='--')
         if sp in eqmix:
-            ax.plot(eqmix[sp],sol['alt']/1e5,label=sp, c=colors[i], lw=2, ls='--', alpha=1)
+            ax.plot(eqmix[sp],sol['alt']/1e5,label=sp, c=colors[i], lw=2, ls=':', alpha=1)
         
         ax.text(0.02, ylabel[i], labels[i], \
                 size = 15, ha='left', va='top',transform=ax.transAxes,color=colors[i])
@@ -322,10 +323,11 @@ def plot(pc, outfile):
 
     ax = axx[0]
     ax1 = ax.twinx()
-    ax1.plot([],[],lw=2,ls='-',c='k',label='Photochemistry')
-    ax1.plot([],[],lw=2,ls='--',c='k',label='Thermochemical Equilibrium')
+    ax1.plot([],[],lw=2,ls='-',c='k',label='Photochemistry (nominal)')
+    ax1.plot([],[],lw=2,ls='--',c='k',label='Photochemistry (w/ extra Cl chem.)')
+    ax1.plot([],[],lw=2,ls=':',c='k',label='Thermochemical Equilibrium')
     ax1.set_yticks([])
-    ax1.legend(ncol=2,bbox_to_anchor=(-0.04,1.0),loc='lower left',fontsize=12)
+    ax1.legend(ncol=3,bbox_to_anchor=(-0.04,1.0),loc='lower left',fontsize=11.5)
         
     plt.subplots_adjust(hspace=.03, wspace=0.03)
     plt.savefig(outfile,dpi=300,bbox_inches = 'tight')
@@ -340,8 +342,23 @@ def main():
     assert pc.find_steady_state()
     pc.out2atmosphere_txt('results/Venus/atmosphere.txt',overwrite=True)
 
+    # With Rimmer et al. chem.
+    pc1 = initialize(
+        reaction_file='input/Venus/zahnle_earth_w_rimmer2021.yaml',
+        atmosphere_file='results/Venus/atmosphere.txt',
+        clouds=False
+    )
+    pc1.var.atol = 1e-17
+    pc1.var.equilibrium_time = 1e11
+    assert pc1.find_steady_state()
+    pc1.var.nsteps_before_reinit = 100000
+    pc1.var.atol = 1e-18
+    pc1.var.equilibrium_time = 1e13
+    assert pc1.find_steady_state()
+    pc1.out2atmosphere_txt('results/Venus/atmosphere_rimmer.txt',overwrite=True)
+
     # Plot 
-    plot(pc, 'figures/venus.png')
+    plot(pc, pc1, 'figures/venus.png')
 
     # Crisp cloud for comparison
     pc1 = initialize(

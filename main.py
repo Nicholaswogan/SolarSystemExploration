@@ -7,6 +7,7 @@ import mars
 # import mars_climate
 import titan
 import titan_climate
+import jupiter
 
 def main():
     input_files.main()
@@ -17,6 +18,7 @@ def main():
     mars.main()
     titan.main()
     titan_climate.main()
+    jupiter.main()
     
 if __name__ == '__main__':
     main()

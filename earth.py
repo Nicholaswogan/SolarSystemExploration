@@ -61,8 +61,7 @@ def plot(pc):
 
     ax = axs[0]
     species = ['H2O','O3','NO','NO2','N2O','HNO3']
-    colors = ['C0','C6','C7','C8','C9','C5']
-    # coords = [(1e-3, 20),(1e-3, 20)]
+    colors = ['C0','C6','C1','C8','C9','C5']
     for i,sp in enumerate(species):
         ax.plot(sol[sp],sol['alt']/1e5,label=utils.species_to_latex(sp), c=colors[i], lw=1.5)
         add_data_to_figure(sp, dat, ax, default_error=0.5, c=colors[i],marker='o',ls='',capsize=1.5,ms=1.5,elinewidth=0.7, capthick=0.7, alpha=0.7)

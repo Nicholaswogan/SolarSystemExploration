@@ -1,0 +1,167 @@
+species:
+- name: COCl2
+  composition: {Cl: 2, C: 1, O: 1}
+  thermo:
+    model: Shomate
+    temperature-ranges: [50.0, 600.0, 6000.0]
+    data:
+    - [36.64799, 115.1274, -128.6208, 57.6869, -0.299915, -236.1052, 297.341]
+    - [78.1977, 3.286914, -0.75784, 0.057932, -3.29201, -253.25, 362.611]
+  note: NIST
+- name: ClCO
+  composition: {Cl: 1, C: 1, O: 1}
+  thermo:
+    model: Shomate
+    temperature-ranges: [10.0, 298.0, 1500.0, 6000.0]
+    data:
+    - [35.72106, -97.55731, 939.484, -1474.211, -0.0001680383, -33.67478, 309.9155]
+    - [26.885, 92.826, -41.66, 7.0037, 0.002942, -33.75, 273.0]
+    - [87.0, 6.0, 0.0, 0.0, 0.0, -74.25, 339.9]
+  note: Nicovich et al. (1990) for 298 K and species CH2CO for temperature dependence.
+- name: ClCO3
+  composition: {Cl: 1, C: 1, O: 3}
+  thermo:
+    model: Shomate
+    temperature-ranges: [0, 6000]
+    data:
+    - [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  note: Thermodynamics unknown
+
+# A subset of the reactions from Rimmer et al (2021), Table 5.
+# This subset is all the reactions that I do not have in the main
+# network that I could add, by only adding the species COCl2, ClCO, 
+# and ClCO3. Reactions involving ClCO3 are not reversed because I
+# can not find thermodynamics for the species
+reactions:
+- equation: ClCO + Cl2 <=> COCl2 + Cl
+  rate-constant: {A: 4.18e-12, b: 0.0, Ea: 1490.0}
+- equation: ClCO + ClCO <=> COCl2 + CO
+  rate-constant: {A: 5.0e-11, b: 0.0, Ea: 0.0}
+- equation: O1D + COCl2 <=> Cl2 + CO2
+  rate-constant: {A: 3.6e-10, b: 0.0, Ea: 0.0}
+- equation: O1D + COCl2 <=> ClCO + ClO
+  rate-constant: {A: 3.6e-10, b: 0.0, Ea: 0.0}
+- equation: Cl + CO + M <=> ClCO + M
+  type: falloff
+  low-P-rate-constant: {A: 3.365147619454777e-24, b: -3.8, Ea: 0.0}
+  high-P-rate-constant: {A: 0.024384377365587687, b: -4.8, Ea: 0.0}
+- equation: ClCO + O2 + M => ClCO3 + M
+  type: falloff
+  low-P-rate-constant: {A: 5.7e-32, b: 0.0, Ea: -500.0}
+  high-P-rate-constant: {A: 6.0e-13, b: 0.0, Ea: 0.0}
+- equation: Cl + ClCO <=> Cl2 + CO
+  rate-constant: {A: 2.16e-09, b: 0.0, Ea: 1670.0}
+- equation: O + ClCO <=> Cl + CO2
+  rate-constant: {A: 3.0e-11, b: 0.0, Ea: 0.0}
+- equation: O + ClCO <=> ClO + CO
+  rate-constant: {A: 3.0e-12, b: 0.0, Ea: 0.0}
+- equation: H + ClCO <=> HCl + CO
+  rate-constant: {A: 1.0e-11, b: 0.0, Ea: 0.0}
+- equation: OH + ClCO <=> HOCl + CO
+  rate-constant: {A: 1.5e-10, b: 0.0, Ea: 0.0}
+- equation: S + ClCO <=> OCS + Cl
+  rate-constant: {A: 3.0e-12, b: 0.0, Ea: 0.0}
+- equation: ClCO + ClCO3 => CO2 + CO2 + Cl + Cl
+  rate-constant: {A: 1.0e-11, b: 0.0, Ea: 0.0}
+- equation: O + ClCO3 => Cl + O2 + CO2
+  rate-constant: {A: 1.0e-11, b: 0.0, Ea: 0.0}
+- equation: H + ClCO3 => Cl + OH + CO2
+  rate-constant: {A: 1.0e-11, b: 0.0, Ea: 0.0}
+- equation: Cl + ClCO3 => Cl + ClO + CO2
+  rate-constant: {A: 1.0e-11, b: 0.0, Ea: 0.0}
+- equation: S + ClCO3 => Cl + SO + CO2
+  rate-constant: {A: 3.0e-11, b: 0.0, Ea: 0.0}
+- equation: SO + ClCO3 => Cl + SO2 + CO2
+  rate-constant: {A: 1.0e-11, b: 0.0, Ea: 0.0}
+- equation: SO2 + ClCO3 => Cl + SO3 + CO2
+  rate-constant: {A: 1.0e-15, b: 0.0, Ea: 0.0}
+- equation: S + O + M <=> SO + M
+  type: falloff
+  low-P-rate-constant: {A: 3.01e-33, b: 0.0, Ea: 0.0}
+  high-P-rate-constant: {A: 2.181e-11, b: -1.0, Ea: 0.0}
+- equation: HS + O2 <=> OH + SO
+  rate-constant: {A: 4.0e-19, b: 0.0, Ea: 0.0}
+- equation: ClO + SO <=> Cl + SO2
+  rate-constant: {A: 2.8e-11, b: 0.0, Ea: 0.0}
+- equation: S + ClO <=> SO + Cl
+  rate-constant: {A: 4.0e-11, b: 0.0, Ea: 0.0}
+- equation: HO2 + SO <=> SO2 + OH
+  rate-constant: {A: 2.8e-11, b: 0.0, Ea: 0.0}
+- equation: O1D + SO2 <=> SO + O2
+  rate-constant: {A: 1.3e-10, b: 0.0, Ea: 0.0}
+- equation: S + SO3 <=> SO2 + SO
+  rate-constant: {A: 1.0e-16, b: 0.0, Ea: 0.0}
+- equation: OCS + NO3 <=> CO + SO + NO2
+  rate-constant: {A: 1.0e-16, b: 0.0, Ea: 0.0}
+- equation: O1D + Cl2 <=> ClO + Cl
+  rate-constant: {A: 1.55e-10, b: 0.0, Ea: 0.0}
+- equation: ClO + ClO <=> Cl2 + O2
+  rate-constant: {A: 1.0e-12, b: 0.0, Ea: 1590.0}
+- equation: CS + NO2 <=> OCS + NO
+  rate-constant: {A: 7.61e-17, b: 0.0, Ea: 0.0}
+- equation: CS + O2 <=> OCS + O
+  rate-constant: {A: 2.62e-16, b: 0.0, Ea: 1860.0}
+- equation: CS2 + OH <=> OCS + HS
+  rate-constant: {A: 1.7e-15, b: 0.0, Ea: 0.0}
+- equation: OCS + C <=> CO + CS
+  rate-constant: {A: 1.01e-11, b: 0.0, Ea: 0.0}
+- equation: CS + OH <=> CO + HS
+  rate-constant: {A: 3.0e-11, b: 0.0, Ea: 0.0}
+- equation: CS + C <=> C2 + S
+  rate-constant: {A: 8.313843876330612e-13, b: 0.5, Ea: 20400.0}
+- equation: CS + CH <=> C2H + S
+  rate-constant: {A: 5.0e-11, b: 0.0, Ea: 0.0}
+- equation: S + C2H6 <=> HS + C2H5
+  rate-constant: {A: 2.04e-10, b: 0.0, Ea: 7420.0}
+# - equation: H2S + Cl <=> HCl + S # Bad mass balance?
+#   rate-constant: {A: 7.45e-11, b: 0.0, Ea: 0.0}
+- equation: SO2 + NO3 <=> SO3 + NO2
+  rate-constant: {A: 1.8e-22, b: 0.0, Ea: 0.0}
+- equation: SO2 + HO2 <=> OH + SO3
+  rate-constant: {A: 2.26e-13, b: 0.0, Ea: 3420.0}
+- equation: Cl + O + M <=> ClO + M
+  type: falloff
+  low-P-rate-constant: {A: 5.0e-32, b: 0.0, Ea: 0.0}
+  high-P-rate-constant: {A: 3.6300000000000004e-10, b: -1.0, Ea: 0.0}
+- equation: Cl + HO2 <=> HCl + O2
+  rate-constant: {A: 3.17e-11, b: 0.0, Ea: 0.0}
+- equation: Cl + HO2 <=> ClO + OH
+  rate-constant: {A: 4.1e-11, b: 0.0, Ea: 450.0}
+- equation: Cl + H2O2 <=> HCl + HO2
+  rate-constant: {A: 1.1e-11, b: 0.0, Ea: 980.0}
+- equation: Cl + HOCl <=> HCl + ClO
+  rate-constant: {A: 1.9e-12, b: 0.0, Ea: 130.0}
+- equation: ClO + O <=> Cl + O2
+  rate-constant: {A: 3.78e-11, b: 0.0, Ea: 0.0}
+- equation: ClO + CO <=> CO2 + Cl
+  rate-constant: {A: 1.0e-12, b: 0.0, Ea: 3700.0}
+- equation: O + HCl <=> OH + Cl
+  rate-constant: {A: 1.0e-11, b: 0.0, Ea: 3300.0}
+- equation: O1D + HCl <=> OH + Cl
+  rate-constant: {A: 1.0e-11, b: 0.0, Ea: 0.0}
+- equation: Cl + NO3 <=> ClO + NO2
+  rate-constant: {A: 2.4e-11, b: 0.0, Ea: 0.0}
+- equation: Cl + HNO3 <=> HCl + NO3
+  rate-constant: {A: 2.0e-16, b: 0.0, Ea: 0.0}
+- equation: ClO + NO <=> Cl + NO2
+  rate-constant: {A: 1.68e-11, b: 0.0, Ea: 0.0}
+- equation: ClO + N2O <=> NO + NO + Cl
+  rate-constant: {A: 1.0e-12, b: 0.0, Ea: 4300.0}
+- equation: ClO + HO2 <=> HOCl + O2
+  rate-constant: {A: 5.62e-12, b: 0.0, Ea: 0.0}
+- equation: O + HOCl <=> OH + ClO
+  rate-constant: {A: 1.7e-13, b: 0.0, Ea: 0.0}
+- equation: OH + HOCl <=> H2O + ClO
+  rate-constant: {A: 3.0e-12, b: 0.0, Ea: 500.0}
+- equation: HS + N2O <=> N2 + HSO
+  rate-constant: {A: 5.0e-16, b: 0.0, Ea: 0.0}
+- equation: H2S + HO2 <=> H2O + HSO
+  rate-constant: {A: 5.0e-12, b: 0.0, Ea: 0.0}
+- equation: HSO + O3 <=> O2 + O2 + HS
+  rate-constant: {A: 2.54e-13, b: 0.0, Ea: 384.0}
+- equation: ClO + H2 <=> HCl + OH
+  rate-constant: {A: 1.0e-12, b: 0.0, Ea: 4800.0}
+- equation: ClO + OH <=> HCl + O2
+  rate-constant: {A: 1.29e-12, b: 0.0, Ea: 0.0}
+- equation: O1D + HCl <=> ClO + H
+  rate-constant: {A: 3.6e-11, b: 0.0, Ea: 0.0}
