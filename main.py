@@ -4,7 +4,6 @@ import venus_climate
 import earth
 import earth_climate
 import mars
-# import mars_climate
 import titan
 import titan_climate
 import jupiter
