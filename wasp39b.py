@@ -125,16 +125,16 @@ def plot(pc1, pc2):
 def main():
 
     # Nominal case
-    pc1 = initialize('input/zahnle_earth_HNOCHeS.yaml', 'photochem_data', 'results/WASP39b/atmosphere.pkl')
-    # assert pc1.find_steady_state()
-    # with open('results/WASP39b/atmosphere.pkl','wb') as f:
-    #     pickle.dump(pc1.model_state_to_dict(), f)
+    pc1 = initialize('input/zahnle_earth_HNOCHeS.yaml', 'photochem_data')
+    assert pc1.find_steady_state()
+    with open('results/WASP39b/atmosphere.pkl','wb') as f:
+        pickle.dump(pc1.model_state_to_dict(), f)
 
     # Using VULCAN network
-    pc2 = initialize('input/WASP39b/SNCHO_photo_network.yaml', 'vulcandata', 'results/WASP39b/atmosphere_vulcan.pkl')
-    # assert pc2.find_steady_state()
-    # with open('results/WASP39b/atmosphere_vulcan.pkl','wb') as f:
-    #     pickle.dump(pc2.model_state_to_dict(), f)
+    pc2 = initialize('input/WASP39b/SNCHO_photo_network.yaml', 'vulcandata')
+    assert pc2.find_steady_state()
+    with open('results/WASP39b/atmosphere_vulcan.pkl','wb') as f:
+        pickle.dump(pc2.model_state_to_dict(), f)
 
     # Plot
     plot(pc1, pc2)
