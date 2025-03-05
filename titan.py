@@ -141,7 +141,7 @@ def plot(pc):
 
     ax = axs[1]
     species = ['C2H2','C2H4','C2H6','HCN','HCCCN','CH3CN']
-    colors = ['C5','C7','C8','C4','C3','C2']
+    colors = ['C5','C7','C8','C6','C3','C2']
     for i,sp in enumerate(species):
         ax.plot(sol[sp],sol['alt']/1e5,label=utils.species_to_latex(sp), c=colors[i], lw=1.5)
         utils.add_data_to_figure(sp, dat1, ax, c=colors[i],marker='o',ls='',capsize=1.5,ms=3.5,elinewidth=0.7, capthick=0.7, alpha=0.7)

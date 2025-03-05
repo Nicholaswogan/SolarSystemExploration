@@ -39,14 +39,27 @@ def initialize(special_CH4_diffusion=True):
 
     # Set elemental composition
     gas = pc.gdat.gas
-    molfracs_atoms_jupiter = np.ones(len(gas.atoms_names))*1e-20
     comp = {
         'H': 1.0,
-        'He': 0.0785,
-        'C': 1.19e-3,
-        'O': 3.03e-4,
-        'N': 2.28e-4,
+        'He': 0.0785, # Atreya et al. 2020
+        'C': 1.19e-3, # Atreya et al. 2020
+        'O': 3.29e-04*0.8, # Cavalie et al. (2023), See note below
+        'N': 1.97e-04, # Moeckel et al. (2023), See note below
     }
+
+    # Solar O/H = 6.587302e-04 according to Lodders et al (2021)
+    # Cavalie et al. (2023) finds a O/H of ~0.5x solar based on kinetics modeling
+    # (reconciling the quenched species like CO). So, this puts us at O/H = 3.293651e-04
+    # Or rounded to 3.29e-04. I further multiply by 0.8 to account for rocks 
+    # condensing and sequestering O.
+    # 
+    # Apparently O/H isn't really known on Jupiter. The uncertainty from Juno is really big.
+
+    # Moeckel et al. (2023) used Juno to derive deep atmosphere NH3. They find 2.66x solar N/H, where
+    # Solar N/H is taken to be 7.4e-05. So, then you have a resulting N/H of 1.968400e-04
+    # which I round to 1.97e-4. This is consistent with Atreya et al. (2020).
+    
+    molfracs_atoms_jupiter = np.ones(len(gas.atoms_names))*1e-20
     for sp in comp:
         molfracs_atoms_jupiter[gas.atoms_names.index(sp)] = comp[sp]
     molfracs_atoms_jupiter = molfracs_atoms_jupiter/np.sum(molfracs_atoms_jupiter)
@@ -151,19 +164,19 @@ def plot(pc, c):
     with open('planetary_atmosphere_observations/Jupiter.yaml','r') as f:
         dat = yaml.load(f,Loader=yaml.Loader)
 
-    plt.rcParams.update({'font.size': 13.5})
+    plt.rcParams.update({'font.size': 13})
     fig,axs = plt.subplots(1,2,figsize=[10,3.5],sharex=False,sharey=True)
     fig.patch.set_facecolor("w")
 
     ax = axs[0]
-    species = ['CH4','C2H2','C2H4','C2H6','CO']
-    colors = ['C1','C5','C7','C8','C4']
+    species = ['CH4','C2H2','C2H4','C2H6','CO','HCN']
+    colors = ['C1','C5','C7','C8','C4','C6']
     for i,sp in enumerate(species):
         ax.plot(sol[sp],sol['pressure']/1e6,label=utils.species_to_latex(sp), c=colors[i], lw=1.5)
         add_data_to_figure_p(sp, dat, ax, default_error=None, c=colors[i],marker='o',ls='',capsize=1.5,ms=4,elinewidth=0.7, capthick=0.7, alpha=1)
-    ax.set_xlim(1e-10,9e-3)
+    ax.set_xlim(2e-11,5e-3)
     # ax.legend(ncol=1,bbox_to_anchor=(1.01,1.01),loc='upper right',fontsize=10)
-    ax.text(0.96, .96, '(a)', size = 20, ha='right', va='top',transform=ax.transAxes,color='k')
+    ax.text(0.98, .98, '(a)', size = 20, ha='right', va='top',transform=ax.transAxes,color='k')
     ax.set_ylabel('Pressure (bar)')
     ax.set_yscale('log')
 
@@ -176,7 +189,7 @@ def plot(pc, c):
         ax.plot(sol[sp],sol['pressure']/1e6,label=labels[i], c=colors[i], lw=1.5, ls=ls[i], alpha=alphas[i])
         add_data_to_figure_p(sp, dat, ax, default_error=None, c=colors[i],marker='o',ls='',capsize=1.5,ms=4,elinewidth=0.7, capthick=0.7, alpha=1)
     # ax.set_xlim(1e-10,1)
-    ax.legend(ncol=3,bbox_to_anchor=(0.5,1.01),loc='lower center',fontsize=12)
+    ax.legend(ncol=4,bbox_to_anchor=(-0.03,1.01),loc='lower left',fontsize=12)
     # ax.text(0.02, .96, '(b)', size = 20, ha='left', va='top',transform=ax.transAxes,color='k')
 
     ax.grid(alpha=0.4)
@@ -198,7 +211,7 @@ def plot(pc, c):
 
     ax.legend(ncol=1,bbox_to_anchor=(0.98,0.6),loc='upper right',fontsize=12)
 
-    ax.text(0.96, .96, '(b)', size = 20, ha='right', va='top',transform=ax.transAxes,color='k')
+    ax.text(0.98, .98, '(b)', size = 20, ha='right', va='top',transform=ax.transAxes,color='k')
     ax.set_xlim(50,2100)
     ax.set_xticks(np.arange(100,2100,300))
     ax.grid(alpha=0.4)

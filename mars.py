@@ -120,10 +120,11 @@ def plot(pc, c_clear, c_small, c_mid, c_large):
         dat = yaml.load(f,Loader=yaml.Loader)
 
     # Plot VMR and data
+    # Kasnopolski 2001 suggests 15 ppm H2 at surface. Should note this in text and compare.
     ax = axs[0]
     sol = pc.mole_fraction_dict()
-    species = ['CO','O2','O3','CO2','H2O2','NO','H2O']
-    colors = ['C4','C5','C6','C2','C7','C1','C0']
+    species = ['CO','O2','O3','CO2','H2O2','HO2','NO','H2O']
+    colors = ['C4','C5','C6','C2','C7','C9','C1','C0']
     for i,sp in enumerate(species):
         ax.plot(sol[sp],sol['alt']/1e5,label=utils.species_to_latex(sp), c=colors[i], lw=2)
         add_data_to_figure(sp, dat, ax, default_error=0.5, c=colors[i],marker='o',ls='',capsize=2,ms=3,elinewidth=0.9, capthick=0.9, alpha=0.9)
@@ -180,9 +181,9 @@ def plot(pc, c_clear, c_small, c_mid, c_large):
 def main():
 
     # Photochemistry
-    pc = initialize('results/Mars/atmosphere.txt')
+    pc = initialize()
     assert pc.find_steady_state()
-    # pc.out2atmosphere_txt('results/Mars/atmosphere.txt',overwrite=True)
+    pc.out2atmosphere_txt('results/Mars/atmosphere.txt',overwrite=True)
 
     # Climate
     c_clear = climate(pc, dust_factor=0.0, P_top=3)

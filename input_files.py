@@ -34,7 +34,7 @@ def create_stellar_fluxes():
 def get_solarsystem_observations():
     if os.path.isdir('planetary_atmosphere_observations'):
         shutil.rmtree('planetary_atmosphere_observations')
-    commit = '0007f398fa73f7c713598e1cbe0b189036dad537'
+    commit = 'd9dfe305e81a43be19fe23046790e19daaa28fee'
     url = 'https://github.com/Nicholaswogan/planetary_atmosphere_observations/archive/'+commit+'.zip'
     r = requests.get(url)
     z = zipfile.ZipFile(io.BytesIO(r.content))
@@ -155,9 +155,9 @@ def generate_thermo(mechanism_file, thermo_file, outfile, atoms_names=None, excl
         yaml.dump(dat,f,Dumper=MyDumper,sort_keys=False,width=70)
 
 def main():
-    create_stellar_fluxes()
+    # create_stellar_fluxes()
     get_solarsystem_observations()
-    reaction_mechanisms()
+    # reaction_mechanisms()
 
 if __name__ == '__main__':
     main()
