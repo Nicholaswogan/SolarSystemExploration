@@ -1,5 +1,8 @@
+import numpy as np
+from astropy import constants
 from photochem.utils import stars
 from photochem.utils import zahnle_rx_and_thermo_files, resave_mechanism_with_atoms
+from photochem.utils import vulcan2yaml
 from photochem.utils._format import yaml, Loader, MyDumper, FormatReactions_main, mechanism_dict_with_atoms
 import requests
 import zipfile
@@ -12,6 +15,21 @@ def create_stellar_fluxes():
         outputfile='input/SunNow.txt',
         stellar_flux=1367,
     )
+
+    # WASP39b
+    wv, F = np.loadtxt('input/WASP39b/sflux-wasp39-frances.txt',skiprows=1).T
+    # Scale to where WASP39b is
+    F = F*((0.932*constants.R_sun.value)/(constants.au.value*0.04828))**2
+    # File
+    fmt = '{:20}'
+    with open('input/WASP39b/WASP39_flux.txt','w') as f:
+        f.write(fmt.format('Wavelength (nm)'))
+        f.write(fmt.format('Solar flux (mW/m^2/nm)'))
+        f.write('\n')
+        for i in range(F.shape[0]):
+            f.write(fmt.format('%e'%wv[i]))
+            f.write(fmt.format('%e'%F[i]))
+            f.write('\n')
 
 def get_solarsystem_observations():
     if os.path.isdir('planetary_atmosphere_observations'):
@@ -66,6 +84,48 @@ def reaction_mechanisms():
         atoms_names=['H','O','N','C','He']
     )
 
+    # WASP-39b
+    resave_mechanism_with_atoms(
+        'input/zahnle_earth.yaml',
+        'input/zahnle_earth_HNOCHeS.yaml',
+        ['H','O','N','C','He','S'],
+        remove_reaction_particles=True
+    )
+    generate_thermo(
+        'input/zahnle_earth.yaml',
+        'input/condensate_thermo.yaml',
+        'input/zahnle_earth_HNOCHeS_thermo.yaml',
+        atoms_names=['H','O','N','C','He','S']
+    )
+
+    # VULCAN stuff for WASP-39b
+    if os.path.isdir('VULCAN'):
+        shutil.rmtree('VULCAN')
+    commit = 'f3d7291d69b356a38f18d70a39c41e143eb85cee'
+    url = 'https://github.com/exoclime/VULCAN/archive/'+commit+'.zip'
+    r = requests.get(url)
+    z = zipfile.ZipFile(io.BytesIO(r.content))
+    z.extractall("./")
+    os.rename('VULCAN-'+commit,'VULCAN')
+    # Make reactions file
+    vulcan2yaml(
+        'input/WASP39b/VULCAN/SNCHO_photo_network.txt',
+        'VULCAN/thermo',
+        'photochem_data'
+    )
+    # Correct He duplicate reaction
+    with open('SNCHO_photo_network.yaml','r') as f:
+        dat1 = yaml.load(f, Loader)
+    for i in range(len(dat1['reactions'])):
+        if dat1['reactions'][i]['equation'] == 'He <=> He':
+            dat1['reactions'][i]['equation'] = 'He => He'
+    dat1 = FormatReactions_main(dat1)
+    with open('SNCHO_photo_network.yaml','w') as f:
+        yaml.dump(dat1, f, MyDumper)
+    shutil.move('SNCHO_photo_network.yaml','input/WASP39b/SNCHO_photo_network.yaml')
+    # Delete VULCAN
+    shutil.rmtree('VULCAN')
+
 def generate_thermo(mechanism_file, thermo_file, outfile, atoms_names=None, exclude_species=[], remove_particles=False):
 
     with open(mechanism_file,'r') as f:
@@ -95,8 +155,8 @@ def generate_thermo(mechanism_file, thermo_file, outfile, atoms_names=None, excl
         yaml.dump(dat,f,Dumper=MyDumper,sort_keys=False,width=70)
 
 def main():
-    # create_stellar_fluxes()
-    # get_solarsystem_observations()
+    create_stellar_fluxes()
+    get_solarsystem_observations()
     reaction_mechanisms()
 
 if __name__ == '__main__':
