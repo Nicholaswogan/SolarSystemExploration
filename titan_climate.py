@@ -19,6 +19,8 @@ def climate(pc, P_top=1.0, c_guess=None, haze=True, remove_C2H6=False):
     if remove_C2H6:
         c.reinit_without_species_opacity('C2H6','k-distributions')
         c.reinit_without_species_opacity('C2H6','photolysis-xs')
+        c.reinit_without_species_opacity('C2H2','k-distributions')
+        c.reinit_without_species_opacity('C2H2','photolysis-xs')
 
     # Mixing ratios
     sol = pc.mole_fraction_dict()
@@ -91,7 +93,7 @@ def plot(c1, c2, c3):
     utils.plot_PT(c , ax, lwc=2, color='0.6', lw=2, ls='--', label='Predicted (w/o haze)')
 
     c = c3
-    utils.plot_PT(c , ax, lwc=2, color='C0', lw=2, ls='--', label='Predicted (w/o C$_2$H$_6$)')
+    utils.plot_PT(c , ax, lwc=2, color='C0', lw=2, ls='--', label='Predicted\n(w/o C$_2$H$_2$ & C$_2$H$_6$)')
 
     dat = np.loadtxt('input/Titan/Waite2013Model.txt',skiprows=1)
     rho = dat[:,3]
@@ -109,7 +111,7 @@ def plot(c1, c2, c3):
     ax.grid(alpha=0.4)
     ax.set_xlabel('Temperature (K)')
     ax.set_ylabel('Pressure (bar)')
-    ax.legend(ncol=1,bbox_to_anchor=(.01, 0.99), loc='upper left',fontsize=11)
+    ax.legend(ncol=1,bbox_to_anchor=(.01, 0.99), loc='upper left',fontsize=10)
 
     # Put altitude on other axis
     ax1 = ax.twinx()
