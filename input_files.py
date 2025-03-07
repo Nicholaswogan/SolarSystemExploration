@@ -155,9 +155,9 @@ def generate_thermo(mechanism_file, thermo_file, outfile, atoms_names=None, excl
         yaml.dump(dat,f,Dumper=MyDumper,sort_keys=False,width=70)
 
 def main():
-    # create_stellar_fluxes()
+    create_stellar_fluxes()
     get_solarsystem_observations()
-    # reaction_mechanisms()
+    reaction_mechanisms()
 
 if __name__ == '__main__':
     main()
