@@ -120,7 +120,7 @@ def climate(pc):
         P_i[c.species_names.index(sp)] = np.maximum(sol[sp][0],1e-30)*sol['pressure'][0]
 
     c.xtol_rc = 1e-6
-    c.P_top = 1
+    c.P_top = 1.5
     c.max_rc_iters = 30
     c.max_rc_iters_convection = 5
     c.surface_heat_flow = 7.485e3 # Li et al. (2018)
@@ -223,16 +223,16 @@ def plot(pc, c):
 
 def main():
     pc = initialize()
-    assert pc.find_steady_state()
+    # assert pc.find_steady_state()
 
-    # with open('results/Jupiter/atmosphere.pkl','rb') as f:
-    #     res = pickle.load(f)
-    # pc.initialize_from_dict(res)
+    with open('results/Jupiter/atmosphere.pkl','rb') as f:
+        res = pickle.load(f)
+    pc.initialize_from_dict(res)
     
     # Save photochem result
-    res = pc.model_state_to_dict()
-    with open('results/Jupiter/atmosphere.pkl','wb') as f:
-        pickle.dump(res, f)
+    # res = pc.model_state_to_dict()
+    # with open('results/Jupiter/atmosphere.pkl','wb') as f:
+    #     pickle.dump(res, f)
 
     c = climate(pc)
 
