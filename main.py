@@ -7,6 +7,7 @@ import mars
 import titan
 import titan_climate
 import jupiter
+import wasp39b
 
 def main():
     input_files.main()
@@ -18,6 +19,7 @@ def main():
     titan.main()
     titan_climate.main()
     jupiter.main()
+    wasp39b.main()
     
 if __name__ == '__main__':
     main()
