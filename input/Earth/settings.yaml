@@ -18,8 +18,7 @@ planet:
     water-condensation: false
     
 particles:
-- {name: H2Oaer, RH-condensation: 0.5}
-    
+- {name: H2Oaer, RH-condensation: 0.4}
 
 boundary-conditions:
 # Fixed surface pressures based on 1.013 bar total.
@@ -47,14 +46,14 @@ boundary-conditions:
 - name: CO
   lower-boundary: {type: vdep + dist flux, vdep: 0.03, flux: 3.7e11, height: -1.0}
   upper-boundary: {type: veff, veff: 0.0}
-- name: CH4
-  lower-boundary: {type: flux, flux: 1.6e11}
+- name: CH4 # Changed compared to Tsai et al. (2021)
+  lower-boundary: {type: flux, flux: 1.0e11}
   upper-boundary: {type: veff, veff: 0.0}
-- name: "NO"
-  lower-boundary: {type: vdep + dist flux, vdep: 0.001, flux: 1.3e10, height: -1.0}
+- name: "NO" # Changed compared to Tsai et al. (2021)
+  lower-boundary: {type: vdep + dist flux, vdep: 0.001, flux: 6.0e8, height: -1.0}
   upper-boundary: {type: veff, veff: 0.0}
-- name: N2O
-  lower-boundary: {type: vdep + dist flux, vdep:  0.0001, flux: 2.3e9, height: -1.0}
+- name: N2O # Changed compared to Tsai et al. (2021)
+  lower-boundary: {type: vdep + dist flux, vdep:  0.0001, flux: 1.0e9, height: -1.0}
   upper-boundary: {type: veff, veff: 0.0}
 - name: NH3
   lower-boundary: {type: vdep + dist flux, vdep: 1, flux: 1.5e9, height: -1.0}

@@ -7,13 +7,24 @@ import earth
 from threadpoolctl import threadpool_limits
 _ = threadpool_limits(limits=4)
 
-def climate(pc):
+def us_standard_atmosphere(z):
+    T0 = 288
+    zs = np.array([0, 11, 20, 32, 47, 51, 71, 86.0, 91.0, 110])
+    slopes = np.array([-6.5, 0.0, 1.0, 2.8, 0.0, -2.8, -2.0, 0.0, 0.0])
+    T = [T0]
+    for i in range(len(slopes)):
+        intercept = T[-1] - zs[i]*slopes[i]
+        T.append(intercept + zs[i+1]*slopes[i])
+    T = np.array(T)
+    return np.interp(z, zs, T)
+
+def climate(pc, data_dir='photochem_data', fCO2=None):
 
     c = AdiabatClimate(
         'input/species_climate.yaml', 
         'input/Earth/settings_climate.yaml', 
         'input/SunNow.txt',
-        data_dir='photochem_data'
+        data_dir=data_dir
     )
 
     # Mixing ratios
@@ -23,8 +34,11 @@ def climate(pc):
     for i,sp in enumerate(c.species_names):
         if sp == 'H2O':
             continue
-        custom_dry_mix[sp] = np.maximum(sol[sp],1e-200)
-        P_i[c.species_names.index(sp)] = np.maximum(sol[sp][0],1e-30)*sol['pressure'][0]
+        tmp = sol[sp]
+        if sp == 'CO2' and fCO2 is not None:
+            tmp[:] = fCO2
+        custom_dry_mix[sp] = np.maximum(tmp,1e-200)
+        P_i[c.species_names.index(sp)] = np.maximum(tmp[0],1e-30)*sol['pressure'][0]
     P_i[c.species_names.index('H2O')] = 260e6
 
     # Particles
@@ -36,7 +50,7 @@ def climate(pc):
     pradii = np.ones((len(Pr),len(c.particle_names)))*0.1e-4
     pradii[:,ind2] = pc.var.particle_radius[ind1,:]
 
-    c.RH = np.ones(len(c.species_names))*0.5
+    c.RH = np.ones(len(c.species_names))*0.4
     c.solve_for_T_trop = True
     c.T_trop = 200
     c.xtol_rc = 1e-5
@@ -52,25 +66,30 @@ def climate(pc):
     assert converged
     return c
 
-def plot(c):
+def plot(c1, c2):
     plt.rcParams.update({'font.size': 14})
     fig,ax = plt.subplots(1,1,figsize=[5,4])
 
-    utils.plot_PT(c, ax, lwc=2, color='k', lw=2, ls='--', label='Predicted')
+    utils.plot_PT(c1, ax, lwc=2, color='0.0', lw=2, ls='--', label='400 ppm CO$_2$')
+    utils.plot_PT(c2, ax, lwc=2, color='0.6', lw=2, ls='--', label='280 ppm CO$_2$')
 
     z, P, T = np.loadtxt('input/Earth/PT_CIRA-86.txt',skiprows=2).T
     ax.plot(T, P , color='C3', lw=2, ls=':', label='CIRA-86\n(Equator Jan.)')
 
+    z1, P1, T1 = np.loadtxt('input/Earth/PT_CIRA-86_45N.txt',skiprows=2).T
+    ax.plot(T1, P1 , color='C0', lw=2, ls='-', label='CIRA-86\n(Equator 45$^{\circ}$ N)')
+
     ax.set_yscale('log')
     ax.invert_yaxis()
     ax.set_ylim(1.013,1.5e-5)
-    ax.set_xlim(180,310)
+    ax.set_xlim(180,305)
     ax.set_xticks(np.arange(180,310,20))
     ax.set_yticks(10.0**np.arange(-4,1,1))
     ax.grid(alpha=0.4)
     ax.set_xlabel('Temperature (K)')
     ax.set_ylabel('Pressure (bar)')
-    ax.legend(ncol=1,bbox_to_anchor=(1.01, 1.01), loc='upper right',fontsize=12)
+    # ax.legend(ncol=1,bbox_to_anchor=(1.01, 1.01), loc='upper right',fontsize=9)
+    ax.legend(ncol=1,bbox_to_anchor=(1.0,.55), loc='upper right',fontsize=9.5)
 
     # Put altitude on other axis
     ax1 = ax.twinx()
@@ -78,6 +97,7 @@ def plot(c):
     ax1.set_ylim(*ax.get_ylim())
     ax1.minorticks_off()
     ax1.set_yticks(ax.get_yticks())
+    c = c1
     ticks = ['%i'%np.interp(np.log10(a), np.log10(c.P/1e6)[::-1], c.z[::-1]/1e5) for a in ax.get_yticks()]
     ax1.set_yticklabels(ticks)
     ax1.set_ylabel('Approximate altitude (km)')
@@ -86,8 +106,9 @@ def plot(c):
 
 def main():
     pc = earth.initialize(atmosphere_file='results/Earth/atmosphere.txt')
-    c = climate(pc)
-    plot(c)
+    c1 = climate(pc)
+    c2 = climate(pc,fCO2=280.0e-6)
+    plot(c1, c2)
 
 if __name__ == "__main__":
     main()
