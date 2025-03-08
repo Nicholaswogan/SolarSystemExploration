@@ -70,8 +70,8 @@ def plot(c1, c2):
     plt.rcParams.update({'font.size': 14})
     fig,ax = plt.subplots(1,1,figsize=[5,4])
 
-    utils.plot_PT(c1, ax, lwc=2, color='0.0', lw=2, ls='--', label='400 ppm CO$_2$')
-    utils.plot_PT(c2, ax, lwc=2, color='0.6', lw=2, ls='--', label='280 ppm CO$_2$')
+    utils.plot_PT(c1, ax, lwc=2, color='0.0', lw=2, ls='--', label='Predicted\n(400 ppm CO$_2$)')
+    utils.plot_PT(c2, ax, lwc=2, color='0.6', lw=2, ls='--', label='Predicted\n(280 ppm CO$_2$)')
 
     z, P, T = np.loadtxt('input/Earth/PT_CIRA-86.txt',skiprows=2).T
     ax.plot(T, P , color='C3', lw=2, ls=':', label='CIRA-86\n(Equator, Jan.)')
@@ -89,7 +89,7 @@ def plot(c1, c2):
     ax.set_xlabel('Temperature (K)')
     ax.set_ylabel('Pressure (bar)')
     # ax.legend(ncol=1,bbox_to_anchor=(1.01, 1.01), loc='upper right',fontsize=9)
-    ax.legend(ncol=1,bbox_to_anchor=(1.0,.55), loc='upper right',fontsize=9.5)
+    ax.legend(ncol=1,bbox_to_anchor=(1.0,.55), loc='upper right',fontsize=9)
 
     # Put altitude on other axis
     ax1 = ax.twinx()

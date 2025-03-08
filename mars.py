@@ -61,10 +61,10 @@ def initialize(atmosphere_file=None):
 
     return pc
 
-def climate(pc, P_top=1.0, dust_factor=0.0, dust_radii=1.5e-4):
+def climate(pc, dust_case, P_top=1.0):
 
     c = AdiabatClimate(
-        'input/Mars/species_climate.yaml', 
+        'input/species_climate.yaml', 
         'input/Mars/settings_climate.yaml', 
         'input/SunNow.txt',
         data_dir='photochem_data'
@@ -82,20 +82,24 @@ def climate(pc, P_top=1.0, dust_factor=0.0, dust_radii=1.5e-4):
 
     # Dust
     # Read profile
-    z, pdensities = np.loadtxt('input/Mars/DSTprof_MarsREF.txt',skiprows=7).T
+    z, pdensities1, pradii1, T_glob, T_glob1 = np.loadtxt('input/Mars/DSTprof_MarsREF_v2.txt',skiprows=7).T
     z = z[::-1].copy()
-    pdensities = pdensities[::-1].copy()
+    pdensities1 = pdensities1[::-1].copy()
+    pradii1 = pradii1[::-1].copy()/1e4 # to cm
 
     # Get pressures of altitudes
     sol = pc.mole_fraction_dict()
     Pr = 10.0**np.interp(z,sol['alt']/1e5,np.log10(sol['pressure']))
 
     # Set densities and radii
-    pdensities = pdensities.reshape((len(Pr),len(c.particle_names)))
-    pradii = np.ones_like(pdensities)*dust_radii
+    ind = c.particle_names.index('Dust')
+    pdensities = np.zeros((len(Pr),len(c.particle_names)))
+    pdensities[:,ind] = pdensities1
+    pradii = np.ones((len(Pr),len(c.particle_names)))*1e-4
+    pradii[:,ind] = pradii1
 
     c.solve_for_T_trop = True
-    c.xtol_rc = 1e-8
+    c.xtol_rc = 1e-6
     c.P_top = P_top
     c.max_rc_iters = 30
 
@@ -104,16 +108,31 @@ def climate(pc, P_top=1.0, dust_factor=0.0, dust_radii=1.5e-4):
     c.set_particle_density_and_radii(Pr, pdensities*0, pradii)
     c.surface_temperature(P_i, 200)
 
+    # Dust optical depths at 9.3 microns, characteristic of different seasons
+    # in the Martian year. All of these come from Fig 21 in Montabone et al. (2015). 
+    dust_opd = {
+        'low': 0.075, # Charateristic of the not so dusty time of the year (solar longitude ~40)
+        'mid': 0.375, # Characteristic of the dusty season (solar longitude 240)
+        'high': 1.0 # Characteristic of a global dust storm.
+    }
+    # These factors are the number I need to multiply the particle density by
+    # so that the 9.3 dust optical depth is equal to `dust_opd`.
+    dust_factors = {
+        'low': 0.04002026301870318,
+        'mid': 0.2001013150935159,
+        'high': 0.5336035069160424
+    }
+
     # Compute climate
-    c.set_particle_density_and_radii(Pr, pdensities*dust_factor, pradii)
+    c.set_particle_density_and_radii(Pr, pdensities*dust_factors[dust_case], pradii)
     assert c.RCE(P_i, c.T_surf, c.T, c.convecting_with_below*False, custom_dry_mix)
 
     return c
 
-def plot(pc, c_clear, c_small, c_mid, c_large):
+def plot(pc, c_low, c_mid, c_high):
 
     plt.rcParams.update({'font.size': 13.5})
-    fig,axs = plt.subplots(1,2,figsize=[10,3.5],sharex=False,sharey=False)
+    fig,axs = plt.subplots(1,2,figsize=[10,3.0],sharex=False,sharey=False)
     fig.patch.set_facecolor("w")
 
     with open('planetary_atmosphere_observations/Mars.yaml','r') as f:
@@ -133,10 +152,10 @@ def plot(pc, c_clear, c_small, c_mid, c_large):
     ind = pc.dat.species_names.index('H2Oaer')
     saturation = pc.dat.particle_sat[ind].sat_pressure
     mix = [saturation(T)/pc.wrk.pressure[i] for i,T in enumerate(pc.var.temperature)]
-    ax.plot(mix,pc.var.z/1e5,c='C0', ls='--', alpha=0.7,label='H$_2$O\nsat.')
+    ax.plot(mix,pc.var.z/1e5,c='C0', ls='--', alpha=0.7,label='H$_2$O sat.')
 
     # Settings
-    ax.legend(ncol=3,bbox_to_anchor=(0.5,1.01),loc='lower center',fontsize=12)
+    ax.legend(ncol=3,bbox_to_anchor=(0.5,1.015),loc='lower center',fontsize=11)
     ax.set_xlim(5e-12,1.2)
     ax.grid(alpha=0.4)
     ax.set_xscale('log')
@@ -146,25 +165,31 @@ def plot(pc, c_clear, c_small, c_mid, c_large):
 
     # Climate
     ax = axs[1]
-    utils.plot_PT(c_clear, ax, lwc=2, color='0.6', lw=2, ls='--', label='Predicted (no dust)')
-    utils.plot_PT(c_small, ax, lwc=2, color='0.4', lw=2, ls='--', label=r'Predicted ($0.1\times$dust)')
-    utils.plot_PT(c_mid, ax, lwc=2, color='0.2', lw=2, ls='--', label=r'Predicted ($1\times$dust)')
-    utils.plot_PT(c_large, ax, lwc=2, color='0.0', lw=2, ls='--', label=r'Predicted ($10\times$dust)')
+    utils.plot_PT(c_low, ax, lwc=2, color='0.6', lw=2, ls='--', label='Predicted\n(clear season)')
+    utils.plot_PT(c_mid, ax, lwc=2, color='0.3', lw=2, ls='--', label='Predicted\n(dusty season)')
+    utils.plot_PT(c_high, ax, lwc=2, color='0.0', lw=2, ls='--', label='Predicted\n(global dust storm)')
+
+    z, _,_,_, T_glob = np.loadtxt('input/Mars/DSTprof_MarsREF_v2.txt',skiprows=7).T
+    z = z[::-1].copy()
+    T_glob = T_glob[::-1].copy()
+    c = c_mid
+    P = 10.0**np.interp(z,c.z/1e5,np.log10(c.P))
+    ax.plot(T_glob, P/1e6, 'C0', lw=2, label='Kahre+2023\n'+r'$\pm45^\circ$ avg.')
 
     # Settings
     ax.set_yscale('log')
     ax.invert_yaxis()
-    ax.set_ylim(c_clear.P_surf/1e6,4e-6)
+    ax.set_ylim(c_mid.P_surf/1e6,1e-6)
     ax.set_xlim(135,235)
     ax.set_xticks(np.arange(140,225,20))
-    ax.set_yticks(10.0**np.arange(-5,-2,1))
+    ax.set_yticks(10.0**np.arange(-6,-2,1))
     ax.grid(alpha=0.4)
     ax.set_xlabel('Temperature (K)')
     ax.set_ylabel('Pressure (bar)')
-    ax.legend(ncol=2,bbox_to_anchor=(0.5,1.01),loc='lower center',fontsize=12)
+    ax.legend(ncol=2,bbox_to_anchor=(0.5,1.015),loc='lower center',fontsize=11)
 
     # Put altitude on other axis
-    c = c_clear
+    c = c_mid
     ax1 = ax.twinx()
     ax1.set_yscale('log')
     ax1.set_ylim(*ax.get_ylim())
@@ -175,7 +200,7 @@ def plot(pc, c_clear, c_small, c_mid, c_large):
     ax1.set_ylabel('Approximate altitude (km)')
 
     plt.subplots_adjust(wspace=0.3)
-        
+
     plt.savefig('figures/mars.png',dpi=300,bbox_inches = 'tight')
 
 def main():
@@ -186,12 +211,11 @@ def main():
     pc.out2atmosphere_txt('results/Mars/atmosphere.txt',overwrite=True)
 
     # Climate
-    c_clear = climate(pc, dust_factor=0.0, P_top=3)
-    c_small = climate(pc, dust_factor=1.0e-1, P_top=3)
-    c_mid = climate(pc, dust_factor=1.0, P_top=3)
-    c_large = climate(pc, dust_factor=1.0e1, P_top=3)
+    c_low = climate(pc, dust_case='low', P_top=5e-1)
+    c_mid = climate(pc, dust_case='mid', P_top=5e-1)
+    c_high = climate(pc, dust_case='high', P_top=5e-1)
 
-    plot(pc, c_clear, c_small, c_mid, c_large)
+    plot(pc, c_low, c_mid, c_high)
 
 if __name__ == '__main__':
     main()

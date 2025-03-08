@@ -206,3 +206,5 @@ particles:
   composition: {C: 6, H: 2}
 - name: H2SO4aer
   composition: {H: 2, S: 1, O: 4}
+- name: Dust
+  composition: {C: 1}
