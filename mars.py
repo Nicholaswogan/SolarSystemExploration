@@ -165,8 +165,8 @@ def plot(pc, c_low, c_mid, c_high):
 
     # Climate
     ax = axs[1]
-    utils.plot_PT(c_low, ax, lwc=2, color='0.6', lw=2, ls='--', label='Predicted\n(clear season)')
-    utils.plot_PT(c_mid, ax, lwc=2, color='0.3', lw=2, ls='--', label='Predicted\n(dusty season)')
+    utils.plot_PT(c_low, ax, lwc=2, color='0.7', lw=2, ls='--', label='Predicted\n(clear season)')
+    utils.plot_PT(c_mid, ax, lwc=2, color='0.4', lw=2, ls='--', label='Predicted\n(dusty season)')
     utils.plot_PT(c_high, ax, lwc=2, color='0.0', lw=2, ls='--', label='Predicted\n(global dust storm)')
 
     z, _,_,_, T_glob = np.loadtxt('input/Mars/DSTprof_MarsREF_v2.txt',skiprows=7).T
