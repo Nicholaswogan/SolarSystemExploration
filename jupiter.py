@@ -219,20 +219,20 @@ def plot(pc, c):
 
     plt.subplots_adjust(wspace=0.05)
 
-    plt.savefig('figures/jupiter.png',dpi=300,bbox_inches='tight')
+    plt.savefig('figures/jupiter.pdf',bbox_inches='tight')
 
 def main():
     pc = initialize()
-    # assert pc.find_steady_state()
+    assert pc.find_steady_state()
 
-    with open('results/Jupiter/atmosphere.pkl','rb') as f:
-        res = pickle.load(f)
-    pc.initialize_from_dict(res)
+    # with open('results/Jupiter/atmosphere.pkl','rb') as f:
+    #     res = pickle.load(f)
+    # pc.initialize_from_dict(res)
     
     # Save photochem result
-    # res = pc.model_state_to_dict()
-    # with open('results/Jupiter/atmosphere.pkl','wb') as f:
-    #     pickle.dump(res, f)
+    res = pc.model_state_to_dict()
+    with open('results/Jupiter/atmosphere.pkl','wb') as f:
+        pickle.dump(res, f)
 
     c = climate(pc)
 

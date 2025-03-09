@@ -201,7 +201,7 @@ def plot(pc, c_low, c_mid, c_high):
 
     plt.subplots_adjust(wspace=0.3)
 
-    plt.savefig('figures/mars.png',dpi=300,bbox_inches = 'tight')
+    plt.savefig('figures/mars.pdf',bbox_inches = 'tight')
 
 def main():
 

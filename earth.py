@@ -99,7 +99,7 @@ def plot(pc):
         ax.set_xlabel('Mixing Ratio')
         
     plt.subplots_adjust(hspace=.03, wspace=0.05)
-    plt.savefig('figures/earth.png',dpi=300,bbox_inches = 'tight')
+    plt.savefig('figures/earth.pdf',bbox_inches = 'tight')
 
 def main():
     pc = initialize()

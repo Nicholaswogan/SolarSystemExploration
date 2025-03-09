@@ -102,7 +102,7 @@ def plot(c1, c2):
     ax1.set_yticklabels(ticks)
     ax1.set_ylabel('Approximate altitude (km)')
 
-    plt.savefig('figures/earth_climate.png',dpi=300,bbox_inches = 'tight')
+    plt.savefig('figures/earth_climate.pdf',bbox_inches = 'tight')
 
 def main():
     pc = earth.initialize(atmosphere_file='results/Earth/atmosphere.txt')

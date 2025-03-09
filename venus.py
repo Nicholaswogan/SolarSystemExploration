@@ -266,7 +266,7 @@ def equilibrate_layers(pc):
 
     return eqmix
 
-def plot(pc, pc1, outfile):
+def plot(pc, pc1):
 
     with open('planetary_atmosphere_observations/Venus.yaml','r') as f:
         dat = yaml.load(f,Loader=yaml.Loader)
@@ -330,7 +330,7 @@ def plot(pc, pc1, outfile):
     ax1.legend(ncol=3,bbox_to_anchor=(-0.04,1.0),loc='lower left',fontsize=11.5)
         
     plt.subplots_adjust(hspace=.03, wspace=0.03)
-    plt.savefig(outfile,dpi=300,bbox_inches = 'tight')
+    plt.savefig('figures/venus.pdf',bbox_inches = 'tight')
 
 def main():
     # Nominal model
@@ -358,7 +358,7 @@ def main():
     pc1.out2atmosphere_txt('results/Venus/atmosphere_rimmer.txt',overwrite=True)
 
     # Plot 
-    plot(pc, pc1, 'figures/venus.png')
+    plot(pc, pc1)
 
     # Crisp cloud for comparison
     pc1 = initialize(

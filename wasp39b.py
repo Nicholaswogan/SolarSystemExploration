@@ -119,7 +119,7 @@ def plot(pc1, pc2):
 
     plt.subplots_adjust(wspace=0.05)
 
-    plt.savefig('figures/wasp39b.png',dpi=300,bbox_inches='tight')
+    plt.savefig('figures/wasp39b.pdf',bbox_inches='tight')
 
 
 def main():

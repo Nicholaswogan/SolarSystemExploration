@@ -124,7 +124,7 @@ def plot(c1, c2, c3):
     ax1.set_yticklabels(ticks)
     ax1.set_ylabel('Approximate altitude (km)')
 
-    plt.savefig('figures/titan_climate.png',dpi=300,bbox_inches='tight')
+    plt.savefig('figures/titan_climate.pdf',bbox_inches='tight')
 
 def main():
     pc = titan.initialize(atmosphere_file='results/Titan/atmosphere.txt')

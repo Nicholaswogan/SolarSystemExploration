@@ -162,7 +162,7 @@ def plot(pc):
     ax.set_xticks(10.0**np.arange(-10,-3,2))
 
     plt.subplots_adjust(wspace=0.05)
-    plt.savefig('figures/titan.png',dpi=300,bbox_inches = 'tight')
+    plt.savefig('figures/titan.pdf',bbox_inches = 'tight')
 
 def main():
     pc = initialize()
