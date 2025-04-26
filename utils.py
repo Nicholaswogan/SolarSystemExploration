@@ -6,7 +6,8 @@ from scipy import integrate
 from copy import deepcopy
 from photochem import EvoAtmosphere, PhotoException
 from tempfile import NamedTemporaryFile
-from photochem.clima import AdiabatClimate
+# from photochem.clima import AdiabatClimate
+from clima import AdiabatClimate
 import yaml
 import re
 
@@ -276,6 +277,13 @@ class AdiabatClimateRobust(AdiabatClimate):
             if optype == 'particle-xs':
                 names = [a['name'] for a in optical_properties[key]['opacities'][optype]]
                 tmp = [optical_properties[key]['opacities'][optype][i] for i in range(len(names)) if names[i] not in species]
+                optical_properties[key]['opacities'][optype] = tmp
+            elif optype == 'CIA':
+                tmp = []
+                for a in optical_properties[key]['opacities'][optype]:
+                    b = a.split('-')
+                    if species not in b:
+                        tmp.append(a)
                 optical_properties[key]['opacities'][optype] = tmp
             else:
                 tmp = [a for a in optical_properties[key]['opacities'][optype] if a not in species]
