@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib
 from matplotlib import pyplot as plt
 
 from utils import plot_PT
@@ -91,42 +92,83 @@ def climate(pc, clouds='crisp', SO2_correction=False):
 
 def plot(c1, c2, c3):
 
-    plt.rcParams.update({'font.size': 14})
-    fig,ax = plt.subplots(1,1,figsize=[5,4])
+    plt.rcParams.update({'font.size': 13.75})
+    fig,axs = plt.subplots(2,3,figsize=[14,7])
 
-    c = c1
-    plot_PT(c, ax, lwc=2, color='k', lw=2, ls='--', label='Predicted (predicted clouds & predicted SO$_2$)')
+    labels = 'Predicted (predicted clouds & predicted SO$_2$)'
 
-    c = c2
-    plot_PT(c, ax, lwc=2, color='0.6', lw=2, ls='--', label='Predicted (Crisp 1986 clouds & predicted SO$_2$)')
+    colors = ['k','0.6','C0']
+    labels = [
+        'Model w/\npredicted clouds &\npredicted SO$_2$',
+        'Model w/\nCrisp 1986 clouds &\npredicted SO$_2$',
+        'Model w/\nCrisp 1986 clouds &\nobserved SO$_2$',
+    ]
+    keys = ['(a)','(b)','(c)']
 
-    c = c3
-    plot_PT(c, ax, lwc=2, color='C0', lw=2, ls='--', label='Predicted (Crisp 1986 clouds w/ observed SO$_2$)')
+    for i,c in enumerate([c1,c2,c3]):
+        ax = axs[0,i]
 
-    z, T, P = np.loadtxt('input/venus/venus_seiff1985.txt',skiprows=2).T
-    ax.plot(T, P , color='C3', lw=2, ls=':', label='VIRA')
+        ax.text(.5, 1.03, labels[i], \
+                    size = 15, ha='center', va='bottom',transform=ax.transAxes)
 
-    ax.set_yscale('log')
-    ax.invert_yaxis()
-    ax.set_ylim(93,2e-6)
-    ax.set_xticks(np.arange(200,900,100))
-    ax.set_yticks(10.0**np.arange(-5,2,1))
-    ax.grid(alpha=0.4)
-    ax.set_xlabel('Temperature (K)')
-    ax.set_ylabel('Pressure (bar)')
-    ax.legend(ncol=1,bbox_to_anchor=(.98, 1.02), loc='upper right', fontsize=12)
+        ax.text(-0.3, 1.2, keys[i], \
+                    size = 25, ha='left', va='bottom',transform=ax.transAxes)
 
-    # Put altitude on other axis
-    ax1 = ax.twinx()
-    ax1.set_yscale('log')
-    ax1.set_ylim(*ax.get_ylim())
-    ax1.minorticks_off()
-    ax1.set_yticks(ax.get_yticks())
-    c = c1
-    ticks = ['%i'%np.interp(np.log10(a), np.log10(c.P/1e6)[::-1], c.z[::-1]/1e5) for a in ax.get_yticks()]
-    ax1.set_yticklabels(ticks)
-    ax1.set_ylabel('Approximate altitude (km)')
+        plot_PT(c, ax, lwc=4, color=colors[i], lw=2, ls='-', label='Predicted')
+        
+        z, T, P = np.loadtxt('input/venus/venus_seiff1985.txt',skiprows=2).T
+        ax.plot(T, P , color='C3', lw=3, ls=':', label='VIRA')
+        
+        ax.set_yscale('log')
+        ax.invert_yaxis()
+        ax.set_ylim(93,1e-5)
+        ax.set_xticks(np.arange(200,900,100))
+        ax.set_yticks(10.0**np.arange(-5,2,1))
+        ax.grid(alpha=0.4)
+        ax.set_xlabel('Temperature (K)')
+        ax.set_ylabel('Pressure (bar)')
+        ax.legend(ncol=1,bbox_to_anchor=(0.99, 0.99), loc='upper right', fontsize=12)
 
+        ax = axs[1,i]
+        z = np.append(0,c.z+c.dz/2)
+        P = 10.0**np.interp(z, np.append(0,c.z), np.log10(np.append(c.P_surf,c.P)))
+        F = -(c.rad.wrk_ir.fdn_n - c.rad.wrk_ir.fup_n)/1e3
+        F = np.append(F[0:-1:2],F[-1])
+        ax.plot(F, P/1e6, c=colors[i], lw=2, ls='--', label='Thermal (simulated)')
+        
+        z = np.append(0,c.z+c.dz/2)
+        P = 10.0**np.interp(z, np.append(0,c.z), np.log10(np.append(c.P_surf,c.P)))
+        F = (c.rad.wrk_sol.fdn_n - c.rad.wrk_sol.fup_n)/1e3
+        F = np.append(F[0:-1:2],F[-1])
+        ax.plot(F, P/1e6, c=colors[i], lw=2, label='Solar (simulated)')
+
+        z, F = np.loadtxt('input/Venus/TomaskoGlobalSolarFluxes.txt',skiprows=2).T
+        z1, _, P1 = np.loadtxt('input/venus/venus_seiff1985.txt',skiprows=2).T
+        P = 10.0**np.interp(z, z1, np.log10(P1))
+        ax.plot(F, P, c='C4', ls=':', label='Measure Solar\n(Tomasko+1980)',lw=3,zorder=0)
+
+        fdn = c.rad.wrk_sol.fdn_n[-1]/1e3*4
+        fup = c.rad.wrk_sol.fup_n[-1]/1e3*4
+        albedo = fup/fdn
+        
+        ax.text(.98, .02, 'Bond albedo = %.2f'%(albedo), \
+                size = 14, ha='right', va='bottom',transform=ax.transAxes)
+
+        ax.legend(ncol=1,bbox_to_anchor=(0.01, 0.99), loc='upper left', fontsize=11)
+        ax.set_ylabel('Pressure (bar)')
+        ax.set_xlabel('Net flux (W m$^{-2}$)')
+        
+        ax.set_yscale('log')
+        ax.invert_yaxis()
+        ax.set_ylim(93,1e-5)
+        ax.set_yticks(10.0**np.arange(-5,2,1))
+        ax.set_xlim(0,155)
+        ax.grid(alpha=0.4)
+
+        rec = matplotlib.patches.Rectangle((-.33,-.3), 1.45, 3, fill=False, lw=1.5, clip_on=False,transform=ax.transAxes)
+        rec = ax.add_patch(rec)
+
+    plt.subplots_adjust(wspace=0.5,hspace=0.3)
     plt.savefig('figures/venus_climate.pdf',bbox_inches='tight')
 
 def main():
