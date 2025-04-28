@@ -267,6 +267,25 @@ class AdiabatClimateRobust(AdiabatClimate):
                         f3.name,
                         self.data_dir
                     )
+    
+    def reinit_with_op(self, op):
+        settings_file = deepcopy(self.settings_file)
+        settings_file['optical-properties'] = op
+
+        with NamedTemporaryFile('w',suffix='.yaml') as f1:
+            with NamedTemporaryFile('w',suffix='.yaml') as f2:
+                with NamedTemporaryFile('w',suffix='.txt') as f3:
+                    yaml.dump(self.species_file, f1, yaml.Dumper)
+                    yaml.dump(settings_file, f2, yaml.Dumper)
+                    f3.write(self.star_file)
+                    f3.flush()
+                    
+                    super().__init__(
+                        f1.name, 
+                        f2.name, 
+                        f3.name,
+                        self.data_dir
+                    )
 
     def reinit_without_species_opacity(self, species, optype):
 
@@ -280,10 +299,15 @@ class AdiabatClimateRobust(AdiabatClimate):
                 optical_properties[key]['opacities'][optype] = tmp
             elif optype == 'CIA':
                 tmp = []
-                for a in optical_properties[key]['opacities'][optype]:
-                    b = a.split('-')
-                    if species not in b:
-                        tmp.append(a)
+                if '-' in species:
+                    for a in optical_properties[key]['opacities'][optype]:
+                        if species != a:
+                            tmp.append(a)
+                else:
+                    for a in optical_properties[key]['opacities'][optype]:
+                        b = a.split('-')
+                        if species not in b:
+                            tmp.append(a)
                 optical_properties[key]['opacities'][optype] = tmp
             else:
                 tmp = [a for a in optical_properties[key]['opacities'][optype] if a not in species]
