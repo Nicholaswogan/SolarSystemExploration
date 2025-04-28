@@ -1,6 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from photochem.clima import AdiabatClimate
+# from photochem.clima import AdiabatClimate
+from clima import AdiabatClimate
 import utils
 import earth
 
@@ -70,14 +71,13 @@ def plot(c1, c2):
     plt.rcParams.update({'font.size': 14})
     fig,ax = plt.subplots(1,1,figsize=[5,4])
 
-    utils.plot_PT(c1, ax, lwc=2, color='0.0', lw=2, ls='--', label='Predicted\n(400 ppm CO$_2$)')
-    utils.plot_PT(c2, ax, lwc=2, color='0.6', lw=2, ls='--', label='Predicted\n(280 ppm CO$_2$)')
+    utils.plot_PT(c1, ax, lwc=4, color='0.0', lw=2, ls='-', label='Predicted')
 
     z, P, T = np.loadtxt('input/Earth/PT_CIRA-86.txt',skiprows=2).T
-    ax.plot(T, P , color='C3', lw=2, ls=':', label='CIRA-86\n(Equator, Jan.)')
+    ax.plot(T, P , color='C3', lw=3, ls=':', label='CIRA-86\n(Equator Jan.)')
 
     z1, P1, T1 = np.loadtxt('input/Earth/PT_CIRA-86_45N.txt',skiprows=2).T
-    ax.plot(T1, P1 , color='C0', lw=2, ls='-', label='CIRA-86\n'+r'(45$^{\circ}$ N, Jan.)')
+    ax.plot(T1, P1 , color='C9', lw=3, ls=':', label='CIRA-86\n'+r'(Equator 45$^{\circ}$ N)')
 
     ax.set_yscale('log')
     ax.invert_yaxis()
@@ -88,8 +88,7 @@ def plot(c1, c2):
     ax.grid(alpha=0.4)
     ax.set_xlabel('Temperature (K)')
     ax.set_ylabel('Pressure (bar)')
-    # ax.legend(ncol=1,bbox_to_anchor=(1.01, 1.01), loc='upper right',fontsize=9)
-    ax.legend(ncol=1,bbox_to_anchor=(1.0,.55), loc='upper right',fontsize=9)
+    ax.legend(ncol=1,bbox_to_anchor=(1.0,.52), loc='upper right',fontsize=9.5)
 
     # Put altitude on other axis
     ax1 = ax.twinx()
