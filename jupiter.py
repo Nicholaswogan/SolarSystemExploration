@@ -2,7 +2,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 from photochem.extensions import gasgiants
 import utils
-from photochem.clima import AdiabatClimate
+# from photochem.clima import AdiabatClimate
+from clima import AdiabatClimate
 import numba as nb
 import yaml
 import pickle
@@ -200,14 +201,13 @@ def plot(pc, c):
     ax.set_xticks(10.0**np.arange(-10,-2,1))
 
     ax = axs[1]
-    utils.plot_PT(c, ax, lwc=2, color='k', lw=2, ls='--', label='Predicted',zorder=500)
+    utils.plot_PT(c, ax, lwc=4, color='k', lw=2, ls='-', label='Predicted',zorder=0)
 
     P, T, Kzz = np.loadtxt('input/Jupiter/Jupiter_deep_top.txt',skiprows=2).T
     inds1 = np.where(P/1e6 < 400e-3)
     inds2 = np.where(P/1e6 >= 400e-3)
-    ax.plot(T[inds1], P[inds1]/1e6, 'r', lw=4, label='Moses+2005', alpha=0.3)
-    ax.plot(T[inds2], P[inds2]/1e6, 'b', lw=4, label='Dry adiabat', alpha=0.3)
-    # ax.plot(T, P/1e6, 'r', lw=3, label='Temperature')
+    ax.plot(T[inds1], P[inds1]/1e6, 'C3', lw=3, label='Moses+2005', alpha=1, zorder=500, ls=':')
+    ax.plot(T[inds2], P[inds2]/1e6, 'C9', lw=3, label='Dry adiabat', alpha=1, zorder=500, ls=':')
 
     ax.legend(ncol=1,bbox_to_anchor=(0.98,0.6),loc='upper right',fontsize=12)
 

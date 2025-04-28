@@ -163,6 +163,7 @@ def plot(pc, c_low, c_mid, c_high):
     ax.set_ylim(0,110)
     ax.set_ylabel('Altitude (km)')
     ax.set_xlabel('Mixing Ratio')
+    ax.text(0.98, .98, '(a)', size = 20, ha='right', va='top',transform=ax.transAxes,color='k')
 
     # Climate
     ax = axs[1]
@@ -188,6 +189,7 @@ def plot(pc, c_low, c_mid, c_high):
     ax.set_xlabel('Temperature (K)')
     ax.set_ylabel('Pressure (bar)')
     ax.legend(ncol=2,bbox_to_anchor=(0.5,1.015),loc='lower center',fontsize=11)
+    ax.text(0.98, .98, '(b)', size = 20, ha='right', va='top',transform=ax.transAxes,color='k')
 
     # Put altitude on other axis
     c = c_mid
