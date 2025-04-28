@@ -138,6 +138,7 @@ def plot(pc):
     ax.set_xlim(5e-4,9e-1)
     ax.set_ylim(0,pc.var.top_atmos/1e5)
     ax.set_ylabel('Altitude (km)')
+    ax.text(0.92, .02, '(a)', size = 20, ha='right', va='bottom',transform=ax.transAxes,color='k')
 
     ax = axs[1]
     species = ['C2H2','C2H4','C2H6','HCN','HCCCN','CH3CN']
@@ -149,6 +150,7 @@ def plot(pc):
     ax.legend(ncol=1,bbox_to_anchor=(0.0,1.01),loc='upper left',fontsize=10)
     ax.set_xlim(1e-10,2e-2)
     ax.set_xticks(10.0**np.arange(-10,0,2))
+    ax.text(0.92, .02, '(b)', size = 20, ha='right', va='bottom',transform=ax.transAxes,color='k')
 
     ax = axs[2]
     species = ['H2O','CO2','CO','NH3']
@@ -160,6 +162,7 @@ def plot(pc):
     ax.legend(ncol=1,bbox_to_anchor=(0.5,0.1),loc='lower left',fontsize=10)
     ax.set_xlim(1e-11,1e-4)
     ax.set_xticks(10.0**np.arange(-10,-3,2))
+    ax.text(0.92, .02, '(c)', size = 20, ha='right', va='bottom',transform=ax.transAxes,color='k')
 
     plt.subplots_adjust(wspace=0.05)
     plt.savefig('figures/titan.pdf',bbox_inches = 'tight')
