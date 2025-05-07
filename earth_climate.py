@@ -19,7 +19,7 @@ def us_standard_atmosphere(z):
     T = np.array(T)
     return np.interp(z, zs, T)
 
-def climate(pc, data_dir='photochem_data', fCO2=None):
+def climate(pc, data_dir='photochem_data', O3_col=None):
 
     c = AdiabatClimate(
         'input/species_climate.yaml', 
@@ -36,8 +36,10 @@ def climate(pc, data_dir='photochem_data', fCO2=None):
         if sp == 'H2O':
             continue
         tmp = sol[sp]
-        if sp == 'CO2' and fCO2 is not None:
-            tmp[:] = fCO2
+        if sp == 'O3' and O3_col is not None:
+            dz = pc.var.z[1] - pc.var.z[0]
+            factor = O3_col/(np.sum(pc.wrk.density*sol['O3']*dz)/2.69e16)
+            tmp[:] *= factor
         custom_dry_mix[sp] = np.maximum(tmp,1e-200)
         P_i[c.species_names.index(sp)] = np.maximum(tmp[0],1e-30)*sol['pressure'][0]
     P_i[c.species_names.index('H2O')] = 260e6
@@ -67,11 +69,16 @@ def climate(pc, data_dir='photochem_data', fCO2=None):
     assert converged
     return c
 
-def plot(c1):
+def plot(c1, c2, pc):
     plt.rcParams.update({'font.size': 14})
     fig,ax = plt.subplots(1,1,figsize=[5,4])
 
-    utils.plot_PT(c1, ax, lwc=4, color='0.0', lw=2, ls='-', label='Predicted')
+    sol = pc.mole_fraction_dict()
+    dz = pc.var.z[1] - pc.var.z[0]
+    O3_col = np.sum(pc.wrk.density*sol['O3']*dz)/2.69e16
+    utils.plot_PT(c1, ax, lwc=4, color='0.0', lw=2, ls='-', label='Predicted (O$_3$ = %i DU)'%(O3_col),zorder=1)
+
+    utils.plot_PT(c2, ax, lwc=4, color='0.65', lw=2, ls='-', label='Predicted (O$_3$ = 500 DU)',zorder=0)
 
     z, P, T = np.loadtxt('input/Earth/PT_CIRA-86.txt',skiprows=2).T
     ax.plot(T, P , color='C3', lw=3, ls=':', label='CIRA-86\n(Equator Jan.)')
@@ -88,7 +95,7 @@ def plot(c1):
     ax.grid(alpha=0.4)
     ax.set_xlabel('Temperature (K)')
     ax.set_ylabel('Pressure (bar)')
-    ax.legend(ncol=1,bbox_to_anchor=(1.0,.52), loc='upper right',fontsize=9.5)
+    ax.legend(ncol=1,bbox_to_anchor=(1.0,.48), loc='upper right',fontsize=8.5)
 
     # Put altitude on other axis
     ax1 = ax.twinx()
@@ -106,7 +113,8 @@ def plot(c1):
 def main():
     pc = earth.initialize(atmosphere_file='results/Earth/atmosphere.txt')
     c1 = climate(pc)
-    plot(c1)
+    c2 = climate(pc, O3_col=500.0)
+    plot(c1, c2, pc)
 
 if __name__ == "__main__":
     main()
