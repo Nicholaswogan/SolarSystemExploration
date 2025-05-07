@@ -63,6 +63,13 @@ def reaction_mechanisms():
     with open('input/Venus/zahnle_earth_w_rimmer2021.yaml', 'w') as f:
         yaml.dump(dat,f,Dumper=MyDumper,sort_keys=False,width=70)
 
+    generate_thermo(
+        'input/zahnle_earth.yaml',
+        'input/condensate_thermo.yaml',
+        'input/zahnle_earth_thermo.yaml',
+        atoms_names=['H','O','N','C','He','S','Cl']
+    )
+
     # Mars and Titan
     resave_mechanism_with_atoms(
         'input/zahnle_earth.yaml',
