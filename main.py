@@ -8,6 +8,7 @@ import titan
 import titan_climate
 import jupiter
 import wasp39b
+import temp_eddy
 
 def main():
     input_files.main()
@@ -20,6 +21,7 @@ def main():
     titan_climate.main()
     jupiter.main()
     wasp39b.main()
+    temp_eddy.main()
     
 if __name__ == '__main__':
     main()

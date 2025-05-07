@@ -1154,7 +1154,7 @@ particles:
   formation: reaction
   density: 1.0
   composition: {C: 6, H: 2}
-  optical-properties: khare1984frac
+  optical-properties: khare1984
   optical-type: mie
   equation: C2H + C4H2 => HCaer1 + H
   type: elementary
@@ -1163,7 +1163,7 @@ particles:
   formation: reaction
   density: 1.0
   composition: {C: 2, H: 3, N: 2}
-  optical-properties: khare1984frac
+  optical-properties: khare1984
   optical-type: mie
   equation: H2CN + HCN => HCaer2
   type: elementary
@@ -1172,7 +1172,7 @@ particles:
   formation: reaction
   density: 1.0
   composition: {C: 7, H: 2, N: 1}
-  optical-properties: khare1984frac
+  optical-properties: khare1984
   optical-type: mie
   equation: C4H + HCCCN => HCaer3
   type: elementary
@@ -2329,7 +2329,7 @@ reactions:
 - equation: HSO3 + O <=> OH + SO3
   rate-constant: {A: 1.0e-11, b: 0.0, Ea: 0.0}
 - equation: SO3 + H2O + H2O <=> H2SO4 + H2O
-  rate-constant: {A: 6.9e-41, b: 1.0, Ea: -6540.0}
+  rate-constant: {A: 2.3e-43, b: 1.0, Ea: -6540.0}
 - equation: CH3 + O2 (+ M) <=> CH3O2 (+ M)
   type: falloff
   low-P-rate-constant: {A: 1.494515e-25, b: -3.3, Ea: 0.0}

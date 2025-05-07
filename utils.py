@@ -235,14 +235,17 @@ def compute_pressure_of_ZT(z, T, mubar, planet_radius, planet_mass, P_surf):
 
 class AdiabatClimateRobust(AdiabatClimate):
 
-    def __init__(self, species_file, settings_file, star_file, data_dir=None):
-        
+    def __init__(self, species_file, settings_file, star_file, data_dir=None, **kwargs):
+
         super().__init__(
             species_file, 
             settings_file, 
             star_file,
-            data_dir
+            data_dir,
+            **kwargs
         )
+
+        self.kwargs = kwargs
 
         with open(species_file,'r') as f:
             self.species_file = yaml.load(f, yaml.Loader)
@@ -265,7 +268,8 @@ class AdiabatClimateRobust(AdiabatClimate):
                         f1.name, 
                         f2.name, 
                         f3.name,
-                        self.data_dir
+                        self.data_dir,
+                        **self.kwargs
                     )
     
     def reinit_with_op(self, op):
@@ -284,7 +288,8 @@ class AdiabatClimateRobust(AdiabatClimate):
                         f1.name, 
                         f2.name, 
                         f3.name,
-                        self.data_dir
+                        self.data_dir,
+                        **self.kwargs
                     )
 
     def reinit_without_species_opacity(self, species, optype):
@@ -327,7 +332,8 @@ class AdiabatClimateRobust(AdiabatClimate):
                         f1.name, 
                         f2.name, 
                         f3.name,
-                        self.data_dir
+                        self.data_dir,
+                        **self.kwargs
                     )
 
 def species_to_latex(sp):

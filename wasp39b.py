@@ -2,7 +2,6 @@ import numpy as np
 from matplotlib import pyplot as plt
 from photochem.extensions import gasgiants
 import utils
-from photochem.clima import AdiabatClimate
 import numba as nb
 import yaml
 import pickle

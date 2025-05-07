@@ -130,7 +130,7 @@ def main():
     pc = titan.initialize(atmosphere_file='results/Titan/atmosphere.txt')
 
     c1 = climate(pc, P_top=1, c_guess=None, haze=True, remove_C2H6=False)
-    c2 = climate(pc, P_top=1, c_guess=None, haze=False, remove_C2H6=False)
+    c2 = climate(pc, P_top=1.05, c_guess=None, haze=False, remove_C2H6=False)
     c3 = climate(pc, P_top=1, c_guess=None, haze=True, remove_C2H6=True)
 
     plot(c1, c2, c3)
