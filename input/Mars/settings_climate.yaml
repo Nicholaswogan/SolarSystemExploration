@@ -4,16 +4,16 @@ atmosphere-grid:
 planet:
   planet-mass: 6.39e26
   planet-radius: 3.3895e8
-  surface-albedo: 0.1
+  surface-albedo: 0.2
   number-of-zenith-angles: 4
   photon-scale-factor: 0.432
 
 optical-properties:
   ir:
     k-method: RandomOverlapResortRebin
-    opacities: {k-distributions: on, CIA: on, rayleigh: on, photolysis-xs: on,
+    opacities: {k-distributions: on, CIA: on, rayleigh: on, photolysis-xs: on, water-continuum: MT_CKD,
     particle-xs: [{name: Dust, data: marsdust}]}
   solar:
     k-method: RandomOverlapResortRebin
-    opacities: {k-distributions: on, CIA: on, rayleigh: on, photolysis-xs: on,
+    opacities: {k-distributions: on, CIA: on, rayleigh: on, photolysis-xs: on, water-continuum: MT_CKD,
     particle-xs: [{name: Dust, data: marsdust}]}

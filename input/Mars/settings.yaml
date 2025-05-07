@@ -7,7 +7,7 @@ atmosphere-grid:
 planet:
   planet-mass: 6.39e26
   planet-radius: 3.3895e8
-  surface-albedo: 0.1
+  surface-albedo: 0.2
   solar-zenith-angle: 60.0
   photon-scale-factor: 0.432
   hydrogen-escape: {type: diffusion limited}
