@@ -35,7 +35,7 @@ boundary-conditions:
   lower-boundary: {type: press, press: 4.05200e+02} # 400 ppm
   upper-boundary: {type: veff, veff: 0.0}
 
-# Nominal values from Catling et al. (2010)
+# Assumed
 - name: HCl
   lower-boundary: {type: vdep + dist flux, vdep: 0.02, flux: 1.0e8, height: -1}
   upper-boundary: {type: veff, veff: 0.0}
@@ -43,45 +43,76 @@ boundary-conditions:
 # Surface fluxes based on Tsai et al. (2021), Table 2, which itself is based on
 # a number of references (Hauglustaine et al 1994, Smithson 2001, Seinfeld and 
 # Pandis 2016 and Li et al. 2003)
+
+# vdep: Hauglustaine et al. (1994)
+# flux: Seinfeld and Pandis (2016)
 - name: CO
   lower-boundary: {type: vdep + dist flux, vdep: 0.03, flux: 3.7e11, height: -1.0}
   upper-boundary: {type: veff, veff: 0.0}
-- name: CH4 # Changed compared to Tsai et al. (2021)
-  lower-boundary: {type: flux, flux: 1.0e11}
+# Changed compared to Tsai et al. (2021)
+# flux: Jackson et al. (2020)
+- name: CH4
+  lower-boundary: {type: flux, flux: 1.4e11}
   upper-boundary: {type: veff, veff: 0.0}
-- name: "NO" # Changed compared to Tsai et al. (2021)
-  lower-boundary: {type: vdep + dist flux, vdep: 0.001, flux: 6.0e8, height: -1.0}
+# Changed compared to Tsai et al. (2021)
+# vdep: Hauglustaine et al. (1994)
+# flux: Seinfeld and Pandis (2016) for lightning + soils.
+- name: "NO"
+  lower-boundary: {type: vdep + dist flux, vdep: 0.01, flux: 3.0e9, height: -1.0}
   upper-boundary: {type: veff, veff: 0.0}
-- name: N2O # Changed compared to Tsai et al. (2021)
-  lower-boundary: {type: vdep + dist flux, vdep:  0.0001, flux: 1.0e9, height: -1.0}
+# Changed compared to Tsai et al. (2021)
+# vdep: Hauglustaine et al. (1994)
+# flux: Schwieterman et al. (2022)
+- name: N2O
+  lower-boundary: {type: vdep + dist flux, vdep: 0.0, flux: 1.5e9, height: -1.0}
   upper-boundary: {type: veff, veff: 0.0}
+# Changed compared to Tsai et al. (2021)
+# vdep: Hu et al. (2012)
+# flux: Seinfeld and Pandis (2016)
 - name: NH3
-  lower-boundary: {type: vdep + dist flux, vdep: 1, flux: 1.5e9, height: -1.0}
+  lower-boundary: {type: vdep + dist flux, vdep: 1, flux: 1.5e10, height: -1.0}
   upper-boundary: {type: veff, veff: 0.0}
+# Changed compared to Tsai et al. (2021)
+# vdep: Hauglustaine et al. (1994)
 - name: NO2
-  lower-boundary: {type: vdep, vdep: 0.01}
+  lower-boundary: {type: vdep, vdep: 0.05}
   upper-boundary: {type: veff, veff: 0.0}
+# Changed compared to Tsai et al. (2021)
+# vdep: Hauglustaine et al. (1994)
 - name: NO3
-  lower-boundary: {type: vdep, vdep: 0.1}
+  lower-boundary: {type: vdep, vdep: 0.05}
   upper-boundary: {type: veff, veff: 0.0}
+# vdep: Seinfeld and Pandis (2016)
+# flux: Seinfeld and Pandis (2016)
 - name: SO2
   lower-boundary: {type: vdep + dist flux, vdep: 1, flux: 9e9, height: -1.0}
   upper-boundary: {type: veff, veff: 0.0}
+# vdep: Hu et al. (2012)
+# flux: Seinfeld and Pandis (2016)
 - name: H2S
   lower-boundary: {type: vdep + dist flux, vdep: 0.015, flux: 2e8, height: -1.0}
   upper-boundary: {type: veff, veff: 0.0}
+# vdep: Tsai et al. (2021)
+# flux: Seinfeld and Pandis (2016)
 - name: OCS
   lower-boundary: {type: vdep + dist flux, vdep: 0.003, flux: 5.4e7, height: -1.0}
   upper-boundary: {type: veff, veff: 0.0}
+# vdep: Hu et al. (2012)
+# flux: Seinfeld and Pandis (2016)
 - name: H2SO4
   lower-boundary: {type: vdep + dist flux, vdep: 1, flux: 7e8, height: -1.0}
   upper-boundary: {type: veff, veff: 0.0}
+# vdep: Tsai et al. (2021)
+# flux: Li et al. (2003)
 - name: HCN
   lower-boundary: {type: vdep + dist flux, vdep: 0.13, flux: 1.7e8, height: -1.0}
   upper-boundary: {type: veff, veff: 0.0}
+# vdep: Tsai et al. (2021)
+# flux: Li et al. (2003)
 - name: CH3CN
   lower-boundary: {type: vdep + dist flux, vdep: 0.13, flux: 1.3e8, height: -1.0}
   upper-boundary: {type: veff, veff: 0.0}
+# vdep: Tsai et al. (2021)
 - name: HNO3
   lower-boundary: {type: vdep, vdep: 4}
   upper-boundary: {type: veff, veff: 0.0}

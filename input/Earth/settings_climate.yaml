@@ -10,9 +10,9 @@ planet:
 optical-properties:
   ir:
     k-method: RandomOverlapResortRebin
-    opacities: {k-distributions: on, CIA: on, rayleigh: on, photolysis-xs: on,
+    opacities: {k-distributions: on, CIA: on, rayleigh: on, photolysis-xs: on, water-continuum: MT_CKD,
     particle-xs: [{name: HCaer, data: khare1984frac}, {name: H2SO4aer, data: palmer1975}]}
   solar:
     k-method: RandomOverlapResortRebin
-    opacities: {k-distributions: on, CIA: on, rayleigh: on, photolysis-xs: on,
+    opacities: {k-distributions: on, CIA: on, rayleigh: on, photolysis-xs: on, water-continuum: MT_CKD,
     particle-xs: [{name: HCaer, data: khare1984frac}, {name: H2SO4aer, data: palmer1975}]}

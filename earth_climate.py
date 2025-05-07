@@ -67,7 +67,7 @@ def climate(pc, data_dir='photochem_data', fCO2=None):
     assert converged
     return c
 
-def plot(c1, c2):
+def plot(c1):
     plt.rcParams.update({'font.size': 14})
     fig,ax = plt.subplots(1,1,figsize=[5,4])
 
@@ -106,8 +106,7 @@ def plot(c1, c2):
 def main():
     pc = earth.initialize(atmosphere_file='results/Earth/atmosphere.txt')
     c1 = climate(pc)
-    c2 = climate(pc,fCO2=280.0e-6)
-    plot(c1, c2)
+    plot(c1)
 
 if __name__ == "__main__":
     main()
