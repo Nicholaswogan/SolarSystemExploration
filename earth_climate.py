@@ -35,6 +35,8 @@ def climate(pc, data_dir='photochem_data', O3_col=None):
     for i,sp in enumerate(c.species_names):
         if sp == 'H2O':
             continue
+        if sp not in sol:
+            continue
         tmp = sol[sp]
         if sp == 'O3' and O3_col is not None:
             dz = pc.var.z[1] - pc.var.z[0]

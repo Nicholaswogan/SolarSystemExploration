@@ -30,7 +30,7 @@ def get_zTKzzmix():
 def initialize(atmosphere_file=None):
     
     pc = EvoAtmosphereRobust(
-        'input/zahnle_earth.yaml',
+        'input/zahnle_earth_HNOCHeS.yaml',
         'input/Earth/settings.yaml',
         'input/SunNow.txt',
         atmosphere_file,

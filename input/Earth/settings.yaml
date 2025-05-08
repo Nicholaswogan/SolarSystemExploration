@@ -35,11 +35,6 @@ boundary-conditions:
   lower-boundary: {type: press, press: 4.05200e+02} # 400 ppm
   upper-boundary: {type: veff, veff: 0.0}
 
-# Assumed
-- name: HCl
-  lower-boundary: {type: vdep + dist flux, vdep: 0.02, flux: 1.0e8, height: -1}
-  upper-boundary: {type: veff, veff: 0.0}
-
 # Surface fluxes based on Tsai et al. (2021), Table 2, which itself is based on
 # a number of references (Hauglustaine et al 1994, Smithson 2001, Seinfeld and 
 # Pandis 2016 and Li et al. 2003)
