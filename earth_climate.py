@@ -86,7 +86,7 @@ def plot(c1, c2, pc):
     ax.plot(T, P , color='C3', lw=3, ls=':', label='CIRA-86\n(Equator Jan.)')
 
     z1, P1, T1 = np.loadtxt('input/Earth/PT_CIRA-86_45N.txt',skiprows=2).T
-    ax.plot(T1, P1 , color='C9', lw=3, ls=':', label='CIRA-86\n'+r'(Equator 45$^{\circ}$ N)')
+    ax.plot(T1, P1 , color='C9', lw=3, ls=':', label='CIRA-86\n'+r'(45$^{\circ}$ N Jan.)')
 
     ax.set_yscale('log')
     ax.invert_yaxis()
