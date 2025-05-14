@@ -34,7 +34,7 @@ def create_stellar_fluxes():
 def get_solarsystem_observations():
     if os.path.isdir('planetary_atmosphere_observations'):
         shutil.rmtree('planetary_atmosphere_observations')
-    commit = 'd9dfe305e81a43be19fe23046790e19daaa28fee'
+    commit = 'bc42c45f86735bffee8038c3a49770a61ed29c6c'
     url = 'https://github.com/Nicholaswogan/planetary_atmosphere_observations/archive/'+commit+'.zip'
     r = requests.get(url)
     z = zipfile.ZipFile(io.BytesIO(r.content))

@@ -143,8 +143,8 @@ def plot(pc, c_low, c_mid, c_high):
     # Kasnopolski 2001 suggests 15 ppm H2 at surface. Should note this in text and compare.
     ax = axs[0]
     sol = pc.mole_fraction_dict()
-    species = ['CO','O2','O3','CO2','H2O2','HO2','NO','H2O']
-    colors = ['C4','C5','C6','C2','C7','C9','C1','C0']
+    species = ['CO','O2','O3','CO2','H2O2','HO2','NO','H2','H2O']
+    colors = ['C4','C5','C6','C2','C7','C9','C1','C3','C0']
     for i,sp in enumerate(species):
         ax.plot(sol[sp],sol['alt']/1e5,label=utils.species_to_latex(sp), c=colors[i], lw=2)
         add_data_to_figure(sp, dat, ax, default_error=0.5, c=colors[i],marker='o',ls='',capsize=2,ms=3,elinewidth=0.9, capthick=0.9, alpha=0.9)
@@ -156,7 +156,7 @@ def plot(pc, c_low, c_mid, c_high):
     ax.plot(mix,pc.var.z/1e5,c='C0', ls='--', alpha=0.7,label='H$_2$O sat.')
 
     # Settings
-    ax.legend(ncol=3,bbox_to_anchor=(0.5,1.015),loc='lower center',fontsize=11)
+    ax.legend(ncol=4,bbox_to_anchor=(0.5,1.015),loc='lower center',fontsize=11)
     ax.set_xlim(5e-12,1.2)
     ax.grid(alpha=0.4)
     ax.set_xscale('log')
@@ -209,9 +209,9 @@ def plot(pc, c_low, c_mid, c_high):
 def main():
 
     # Photochemistry
-    pc = initialize()
+    pc = initialize('results/Mars/atmosphere.txt')
     assert pc.find_steady_state()
-    pc.out2atmosphere_txt('results/Mars/atmosphere.txt',overwrite=True)
+    # pc.out2atmosphere_txt('results/Mars/atmosphere.txt',overwrite=True)
 
     # Climate
     c_low = climate(pc, dust_case='low', P_top=5e-1)
