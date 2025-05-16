@@ -1,0 +1,18 @@
+H2-H2: 
+  citations: [Molliere2019]
+H2-He: 
+  citations: [Molliere2019]
+N2-N2: 
+  citations: [Molliere2019]
+CH4-CH4: 
+  citations: [Karman2019]
+  notes: From HITRAN. Data came on a regular grid.
+N2-O2: 
+  citations: [Karman2019]
+  notes: From HITRAN. We interpolated the data to a regular grid.
+
+# Molliere2019
+
+# Karman2019
+
+# Mlawer2019
