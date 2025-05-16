@@ -16,38 +16,23 @@ Following are the origin of the CIA cross sections in this folder. Note one mino
   
 - **H2-CH4**: Directly from HITRAN \[2\]. Data came in regular grid.
 
-- **CO2-CO2**: Directly from HITRAN \[2\]. Interpolated to regular grid in complicated way.
+- **CO2-CO2**: A mixture of Robinson and Crisp (2018) \[3\] and Lee et al. (2016) \[4\]. The file's `notes` has detailed citations. The CIA has minor modifications in the NIR so that Venus net thermal fluxes are reproduced.
   
 - **CO2-CH4**: Directly from HITRAN \[2\]. Data came in regular grid.
   
 - **CO2-H2**: Directly from HITRAN \[2\]. Data came in regular grid.
   
+- **N2-CH4**: Directly from HITRAN \[2\].
+  
 - **N2-H2**: Directly from HITRAN \[2\]. Interpolated to regular grid in simple way.
 
-- **H2O-H2O**: CIA formulation of the MT_CKD v3.5 H2O continuum \[3\].
+- **H2O-H2O**: CIA formulation of the MT_CKD v3.5 H2O continuum \[5\].
   
-- **H2O-N2**: CIA formulation of the MT_CKD v3.5 foreign continuum \[3\]. Assumes N2 is the foreign species.
-
-<!-- @ARTICLE{2019Icar..328..160K,
-       author = {{Karman}, Tijs and {Gordon}, Iouli E. and {van der Avoird}, Ad and {Baranov}, Yury I. and {Boulet}, Christian and {Drouin}, Brian J. and {Groenenboom}, Gerrit C. and {Gustafsson}, Magnus and {Hartmann}, Jean-Michel and {Kurucz}, Robert L. and {Rothman}, Laurence S. and {Sun}, Kang and {Sung}, Keeyoon and {Thalman}, Ryan and {Tran}, Ha and {Wishnow}, Edward H. and {Wordsworth}, Robin and {Vigasin}, Andrey A. and {Volkamer}, Rainer and {van der Zande}, Wim J.},
-        title = "{Update of the HITRAN collision-induced absorption section}",
-      journal = {\icarus},
-         year = 2019,
-        month = aug,
-       volume = {328},
-        pages = {160-175},
-          doi = {10.1016/j.icarus.2019.02.034},
-       adsurl = {https://ui.adsabs.harvard.edu/abs/2019Icar..328..160K},
-      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
-} -->
-
-
-
-<!-- Analysis of water vapor absorption in the far-infrared and submillimeter regions using surface radiometric measurements from extremely dry locations. -->
-
-
+- **H2O-N2**: CIA formulation of the MT_CKD v3.5 foreign continuum \[5\]. Assumes N2 is the foreign species.
 
 ## References
 1. [https://doi.org/10.1051/0004-6361/201935470](https://doi.org/10.1051/0004-6361/201935470)
 2. [https://hitran.org/cia/](https://hitran.org/cia/)
-3. [https://hitran.org/mtckd/](https://hitran.org/mtckd/)
+3. [https://doi.org/10.1051/10.1016/j.jqsrt.2018.03.002](https://doi.org/10.1051/10.1016/j.jqsrt.2018.03.002)
+4. [https://doi.org/10.1002/2016JE005087](https://doi.org/10.1002/2016JE005087)
+5. [https://hitran.org/mtckd/](https://hitran.org/mtckd/)

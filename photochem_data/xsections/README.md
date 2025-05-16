@@ -123,3 +123,26 @@ Here is a list of all the new reactions
 - OClO + hv => ClO + O1D
 - S4 + hv => S2 + S2
 ```
+
+## 5/15/25
+
+I added the following photolysis reactions. I also updated the visible cross section for CH4. Reproducing all this new data can be done with the scripts at https://github.com/Nicholaswogan/RateExplorer/tree/main/xsections at commit 64e0f6f3485ae3339da31f313c4c9a68cb31092f .
+
+```yaml
+- C2 + hv => C + C
+- C2H + hv => C2 + H
+- CH + hv => C + H
+- CH2 + hv => CH + H
+- CH3 + hv => 1CH2 + H
+- CH3 + hv => CH2 + H
+- ClO + hv => Cl + O
+- ClO + hv => Cl + O1D
+- HCO + hv => H + CO
+- NH + hv => N + H
+- NH2 + hv => NH + H
+- NO3 + hv => NO + O2
+- NO3 + hv => NO2 + O
+- OH + hv => O + H
+```
+
+ZAHNLE_EARTH HAS NOT BEEN UPDATED.
