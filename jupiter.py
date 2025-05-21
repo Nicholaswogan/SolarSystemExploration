@@ -102,7 +102,7 @@ def initialize(special_CH4_diffusion=True):
 
     return pc
 
-def climate(pc):
+def climate(pc, C2H6_C2H2_factor=1):
     c = AdiabatClimate(
         'input/species_climate.yaml',
         'input/Jupiter/settings_climate.yaml',
@@ -119,6 +119,9 @@ def climate(pc):
             continue
         custom_dry_mix[sp] = np.maximum(sol[sp],1e-200)
         P_i[c.species_names.index(sp)] = np.maximum(sol[sp][0],1e-30)*sol['pressure'][0]
+
+    custom_dry_mix['C2H6'] *= C2H6_C2H2_factor
+    custom_dry_mix['C2H2'] *= C2H6_C2H2_factor
 
     c.xtol_rc = 1e-6
     c.P_top = 1.5
@@ -159,7 +162,7 @@ def add_data_to_figure_p(sp, dat, ax, default_error = None, **kwargs):
                 else:
                     ax.errorbar(mix,alt,xerr=xerr,yerr=yerr,**kwargs)
 
-def plot(pc, c):
+def plot(pc, c1, c2):
     sol = pc.return_atmosphere()
 
     with open('planetary_atmosphere_observations/Jupiter.yaml','r') as f:
@@ -201,21 +204,24 @@ def plot(pc, c):
     ax.set_xticks(10.0**np.arange(-10,-2,1))
 
     ax = axs[1]
-    utils.plot_PT(c, ax, lwc=4, color='k', lw=2, ls='-', label='Predicted',zorder=0)
+    utils.plot_PT(c1, ax, lwc=4, color='k', lw=2, ls='-', label='Predicted',zorder=1)
 
-    P, T, Kzz = np.loadtxt('input/Jupiter/Jupiter_deep_top.txt',skiprows=2).T
-    inds1 = np.where(P/1e6 < 400e-3)
-    inds2 = np.where(P/1e6 >= 400e-3)
-    ax.plot(T[inds1], P[inds1]/1e6, 'C3', lw=3, label='Moses+2005', alpha=1, zorder=500, ls=':')
+    utils.plot_PT(c2, ax, lwc=4, color='C4', lw=2, ls='-', label='Predicted\n(w/o C$_2$H$_2$ & C$_2$H$_6$)',zorder=0)
+
+    P, T = np.loadtxt('input/Jupiter/Seiff1998.txt',skiprows=2).T
+    ax.plot(T, P/1e3, 'C3', lw=3, label='Galileo probe\n(Seiff+1998)', alpha=1, zorder=500, ls=':')
+
+    P, T, _ = np.loadtxt('input/Jupiter/Jupiter_deep_top.txt',skiprows=2).T
+    inds2 = np.where(P/1e6 >= 0.3515)
     ax.plot(T[inds2], P[inds2]/1e6, 'C9', lw=3, label='Dry adiabat', alpha=1, zorder=500, ls=':')
 
-    ax.legend(ncol=1,bbox_to_anchor=(0.98,0.6),loc='upper right',fontsize=12)
+    ax.legend(ncol=1,bbox_to_anchor=(0.98,0.85),loc='upper right',fontsize=12)
 
     ax.text(0.98, .98, '(b)', size = 20, ha='right', va='top',transform=ax.transAxes,color='k')
-    ax.set_xlim(50,2100)
-    ax.set_xticks(np.arange(100,2100,300))
+    ax.set_xlim(100,2500)
     ax.grid(alpha=0.4)
     ax.set_xlabel('Temperature (K)')
+    ax.set_xscale('log')
 
     plt.subplots_adjust(wspace=0.05)
 
@@ -223,20 +229,21 @@ def plot(pc, c):
 
 def main():
     pc = initialize()
-    assert pc.find_steady_state()
+    # assert pc.find_steady_state()
 
-    # with open('results/Jupiter/atmosphere.pkl','rb') as f:
-    #     res = pickle.load(f)
-    # pc.initialize_from_dict(res)
+    with open('results/Jupiter/atmosphere.pkl','rb') as f:
+        res = pickle.load(f)
+    pc.initialize_from_dict(res)
     
     # Save photochem result
-    res = pc.model_state_to_dict()
-    with open('results/Jupiter/atmosphere.pkl','wb') as f:
-        pickle.dump(res, f)
+    # res = pc.model_state_to_dict()
+    # with open('results/Jupiter/atmosphere.pkl','wb') as f:
+    #     pickle.dump(res, f)
 
-    c = climate(pc)
+    c1 = climate(pc, 1.0)
+    c2 = climate(pc, 1.0e-10)
 
-    plot(pc, c)
+    plot(pc, c1, c2)
 
 if __name__ == "__main__":
     main()
