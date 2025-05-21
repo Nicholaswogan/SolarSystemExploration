@@ -7,7 +7,7 @@ import titan
 from threadpoolctl import threadpool_limits
 _ = threadpool_limits(limits=4)
 
-def climate(pc, P_top=1.0, c_guess=None, haze=True, remove_C2H6=False):
+def climate(pc, P_top=1.0, c_guess=None, haze=True, C2H6_C2H2_factor=1.0):
 
     c = utils.AdiabatClimateRobust(
         'input/species_climate.yaml', 
@@ -15,13 +15,7 @@ def climate(pc, P_top=1.0, c_guess=None, haze=True, remove_C2H6=False):
         'input/SunNow.txt',
         data_dir='photochem_data'
     )
-
-    if remove_C2H6:
-        c.reinit_without_species_opacity('C2H6','k-distributions')
-        c.reinit_without_species_opacity('C2H6','photolysis-xs')
-        c.reinit_without_species_opacity('C2H2','k-distributions')
-        c.reinit_without_species_opacity('C2H2','photolysis-xs')
-
+    
     # Mixing ratios
     sol = pc.mole_fraction_dict()
     custom_dry_mix = {'pressure': sol['pressure']}
@@ -31,6 +25,9 @@ def climate(pc, P_top=1.0, c_guess=None, haze=True, remove_C2H6=False):
             continue
         custom_dry_mix[sp] = np.maximum(sol[sp],1e-200)
         P_i[c.species_names.index(sp)] = np.maximum(sol[sp][0],1e-30)*sol['pressure'][0]
+
+    custom_dry_mix['C2H6'] *= C2H6_C2H2_factor
+    custom_dry_mix['C2H2'] *= C2H6_C2H2_factor
 
     # Particles
     Pr = sol['pressure']
@@ -82,18 +79,21 @@ def get_P_from_T_rho(T, rho):
     P = n*const.k*1e7*T
     return P
 
-def plot(c1, c2, c3):
+def plot(c1, c2, c3, c4):
     plt.rcParams.update({'font.size': 14})
     fig,ax = plt.subplots(1,1,figsize=[5,4])
 
     c = c1
-    utils.plot_PT(c, ax, lwc=2, color='k', lw=2, ls='--', label='Predicted')
+    utils.plot_PT(c, ax, lwc=4, color='k', lw=2, ls='-', label='Predicted',zorder=500)
 
     c = c2
-    utils.plot_PT(c , ax, lwc=2, color='0.6', lw=2, ls='--', label='Predicted (w/o haze)')
+    utils.plot_PT(c , ax, lwc=4, color='C0', lw=2, ls='-', label='Predicted (w/o haze)')
 
     c = c3
-    utils.plot_PT(c , ax, lwc=2, color='C0', lw=2, ls='--', label='Predicted\n(w/o C$_2$H$_2$ & C$_2$H$_6$)')
+    utils.plot_PT(c , ax, lwc=4, color='0.6', lw=2, ls='-', label='Predicted\n'+r'(C$_2$H$_2$ & C$_2$H$_6$ $\times$ 0.1)')
+
+    c = c4
+    utils.plot_PT(c , ax, lwc=4, color='C4', lw=2, ls='-', label='Predicted\n'+r'(C$_2$H$_2$ & C$_2$H$_6$ $\times$ 0.01)')
 
     dat = np.loadtxt('input/Titan/Waite2013Model.txt',skiprows=1)
     rho = dat[:,3]
@@ -129,11 +129,12 @@ def plot(c1, c2, c3):
 def main():
     pc = titan.initialize(atmosphere_file='results/Titan/atmosphere.txt')
 
-    c1 = climate(pc, P_top=1, c_guess=None, haze=True, remove_C2H6=False)
-    c2 = climate(pc, P_top=1.05, c_guess=None, haze=False, remove_C2H6=False)
-    c3 = climate(pc, P_top=1, c_guess=None, haze=True, remove_C2H6=True)
+    c1 = climate(pc, P_top=1, c_guess=None, haze=True, C2H6_C2H2_factor=1.0)
+    c2 = climate(pc, P_top=1.05, c_guess=None, haze=False, C2H6_C2H2_factor=1.0)
+    c3 = climate(pc, P_top=1, c_guess=None, haze=True, C2H6_C2H2_factor=0.1)
+    c4 = climate(pc, P_top=1, c_guess=None, haze=True, C2H6_C2H2_factor=0.01)
 
-    plot(c1, c2, c3)
+    plot(c1, c2, c3, c4)
 
 if __name__ == "__main__":
     main()
