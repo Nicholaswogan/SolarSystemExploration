@@ -71,7 +71,7 @@ if use_photo == False and use_ion == True:
 atm_base = 'H2' #Options: 'H2', 'N2', 'O2', 'CO2 -- the bulk gas of the atmosphere: changes the molecular diffsion, thermal diffusion factor, and settling velocity
 rocky = False # for the surface gravity
 nz = 150   # number of vertical layers
-P_b = 5e7  # pressure at the bottom (dyne/cm^2)
+P_b = 11e6  # pressure at the bottom (dyne/cm^2)
 P_t = 5e-3 # pressure at the top (dyne/cm^2)
 use_Kzz = True
 use_moldiff = True
@@ -138,7 +138,7 @@ count_min = 120
 count_max = int(1E4)
 atol = 1.E-1 # Try decreasing this if the solutions are not stable
 mtol = 1.E-22
-mtol_conv = 1.E-20
+mtol_conv = 1.E-10
 pos_cut = 0
 nega_cut = -1.
 loss_eps = 0.05

@@ -7,8 +7,10 @@ import yaml
 import pickle
 from astropy import constants
 import numba as nb
+from threadpoolctl import threadpool_limits
+_ = threadpool_limits(limits=4)
 
-def initialize(mechanism_file, data_dir, model_state_file=None):
+def initialize(mechanism_file, data_dir, model_state_file=None, BOA_pressure_factor=5, initial_cond_with_quenching=True, rainout_condensed_atoms=True):
 
     pc = gasgiants.EvoAtmosphereGasGiant(
         mechanism_file,
@@ -23,6 +25,8 @@ def initialize(mechanism_file, data_dir, model_state_file=None):
     pc.gdat.verbose = True
     pc.var.diurnal_fac = 1.0 # matches VULCAN
     pc.gdat.TOA_pressure_avg = 3e-3
+    pc.gdat.BOA_pressure_factor = BOA_pressure_factor
+    pc.gdat.initial_cond_with_quenching = initial_cond_with_quenching
 
     # Set atomic composition to VULCAN simulation
     comp = {
@@ -54,7 +58,7 @@ def initialize(mechanism_file, data_dir, model_state_file=None):
             Kzz[i] = 5e7*(5/(P[i]/1e6))**0.4
 
     # Initialize
-    pc.initialize_to_climate_equilibrium_PT(P, T, Kzz, 10.0, 1.0)
+    pc.initialize_to_climate_equilibrium_PT(P, T, Kzz, 10.0, 1.0, rainout_condensed_atoms=rainout_condensed_atoms)
 
     if model_state_file is not None:
         with open(model_state_file,'rb') as f:
@@ -80,7 +84,7 @@ def plot(pc1, pc2):
     species = ['H2S','S','S2','SO','SO2']
     colors = ['C8','C4','C6','C13','C5']
     for i,sp in enumerate(species):
-        ax.plot(sol1[sp],sol1['pressure']/1e6,c=colors[i], ls='--', lw=2)
+        ax.plot(sol1[sp],sol1['pressure']/1e6,c=colors[i], ls='-', lw=2.5)
         ax.plot([],[],label=utils.species_to_latex(sp),c=colors[i], ls='-', lw=2)
 
     ax.set_xscale('log')
@@ -93,44 +97,56 @@ def plot(pc1, pc2):
     ax.legend(ncol=10,bbox_to_anchor=(1.025,1.01),loc='lower center')
     ax.set_xlabel('Mixing Ratio')
     ax.set_ylabel('Pressure (bar)')
+    ax.text(0.02, .98, '(a)', size = 20, ha='left', va='top',transform=ax.transAxes,color='k')
 
     ax1 = ax.twinx()
     ax1.set_yticks([])
-    ax1.plot([],[],c='k',ls='--',lw=2,label='Photochem w/ Photochem chem.')
-    ax1.legend(ncol=10,bbox_to_anchor=(0.48,0.35),loc='upper center',fontsize=10)
+    ax1.plot([],[],c='k',ls='-',lw=2.5,label='Photochem w/\nPhotochem chemistry')
+    ax1.legend(ncol=1,bbox_to_anchor=(0.55,0.38),loc='upper center',fontsize=10)
 
     sol2 = pc2.return_atmosphere()
 
     ax = axs[1]
     for i,sp in enumerate(species):
-        ax.plot(sol2[sp],sol2['pressure']/1e6,c=colors[i], ls='-', marker='', ms=3, lw=2,label=sp)
+        ax.plot(sol2[sp],sol2['pressure']/1e6,c=colors[i], ls='-', marker='', ms=3, lw=1.5,label=sp)
         ind = vulcan_species.index(sp)
         ax.plot(vulcan['variable']['ymix'][:,ind],vulcan['atm']['pco']/1e6,c=colors[i], ls=':', lw=2)
 
     ax.grid(alpha=0.4)
     ax.set_xlabel('Mixing Ratio')
+    ax.text(0.02, .98, '(b)', size = 20, ha='left', va='top',transform=ax.transAxes,color='k')
 
     ax1 = ax.twinx()
     ax1.set_yticks([])
-    ax1.plot([],[],c='k',ls='-',lw=2,label='Photochem w/ VULCAN chem.')
-    ax1.plot([],[],c='k',ls=':',lw=2,label='VULCAN w/ VULCAN chem.')
-    ax1.legend(ncol=1,bbox_to_anchor=(0.5,0.35),loc='upper center',fontsize=10)
+    ax1.plot([],[],c='k',ls='-',lw=1.5,label='Photochem w/\nVULCAN chemistry')
+    ax1.plot([],[],c='k',ls=':',lw=2,label='VULCAN w/\nVULCAN chemistry.')
+    ax1.legend(ncol=1,bbox_to_anchor=(0.55,0.38),loc='upper center',fontsize=10)
 
     plt.subplots_adjust(wspace=0.05)
 
     plt.savefig('figures/wasp39b.pdf',bbox_inches='tight')
 
-
 def main():
 
     # Nominal case
-    pc1 = initialize('input/zahnle_earth_HNOCHeS.yaml', 'photochem_data')
+    pc1 = initialize(
+        'input/zahnle_earth_HNOCHeS.yaml', 
+        'photochem_data', 
+        model_state_file=None
+    )
     assert pc1.find_steady_state()
     with open('results/WASP39b/atmosphere.pkl','wb') as f:
         pickle.dump(pc1.model_state_to_dict(), f)
 
     # Using VULCAN network
-    pc2 = initialize('input/WASP39b/SNCHO_photo_network.yaml', 'vulcandata')
+    pc2 = initialize(
+        'input/WASP39b/SNCHO_photo_network.yaml', 
+        'vulcandata', 
+        model_state_file=None,
+        BOA_pressure_factor=30, # matches Vulcan ~11 bar surface
+        initial_cond_with_quenching=False, # to match Vulcan
+        rainout_condensed_atoms=False # to match Vulcan
+    )
     assert pc2.find_steady_state()
     with open('results/WASP39b/atmosphere_vulcan.pkl','wb') as f:
         pickle.dump(pc2.model_state_to_dict(), f)

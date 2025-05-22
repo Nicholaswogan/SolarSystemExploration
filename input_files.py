@@ -9,6 +9,8 @@ import zipfile
 import io
 import os
 import shutil
+import h5py
+import pickle
 
 def create_stellar_fluxes():
     _ = stars.solar_spectrum(
@@ -132,6 +134,42 @@ def reaction_mechanisms():
     shutil.move('SNCHO_photo_network.yaml','input/WASP39b/SNCHO_photo_network.yaml')
     # Delete VULCAN
     shutil.rmtree('VULCAN')
+
+    # Make photolysis cross sections the same.
+    with open('input/WASP39b/VULCAN/wasp39b_10Xsolar_evening.vul','rb') as f:
+        vulcan = pickle.load(f)
+    wavl = vulcan['variable']['bins']
+    with h5py.File("vulcandata/xsections/bins.h5", "w") as f:
+        dset = f.create_dataset("wavl", wavl.shape, 'f')
+        dset[:] = wavl
+
+# def vulcan_jupiter():
+
+#     if os.path.isdir('VULCAN'):
+#         shutil.rmtree('VULCAN')
+#     commit = 'f3d7291d69b356a38f18d70a39c41e143eb85cee'
+#     url = 'https://github.com/exoclime/VULCAN/archive/'+commit+'.zip'
+#     r = requests.get(url)
+#     z = zipfile.ZipFile(io.BytesIO(r.content))
+#     z.extractall("./")
+#     os.rename('VULCAN-'+commit,'VULCAN')
+#     # Make reactions file
+#     vulcan2yaml(
+#         'VULCAN/thermo/NCHO_photo_network_lowT_Jupiter.txt',
+#         'VULCAN/thermo',
+#         'photochem_data'
+#     )
+#     # Correct He duplicate reaction
+#     with open('NCHO_photo_network_lowT_Jupiter.yaml','r') as f:
+#         dat1 = yaml.load(f, Loader)
+#     for i in range(len(dat1['reactions'])):
+#         if dat1['reactions'][i]['equation'] == 'He <=> He':
+#             dat1['reactions'][i]['equation'] = 'He => He'
+#     dat1 = FormatReactions_main(dat1)
+#     with open('NCHO_photo_network_lowT_Jupiter.yaml','w') as f:
+#         yaml.dump(dat1, f, MyDumper)
+#     # Delete VULCAN
+#     shutil.rmtree('VULCAN')
 
 def generate_thermo(mechanism_file, thermo_file, outfile, atoms_names=None, exclude_species=[], remove_particles=False):
 
