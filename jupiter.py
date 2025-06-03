@@ -162,7 +162,7 @@ def add_data_to_figure_p(sp, dat, ax, default_error = None, **kwargs):
                 else:
                     ax.errorbar(mix,alt,xerr=xerr,yerr=yerr,**kwargs)
 
-def plot(pc, c1, c2):
+def plot(pc, c1):
     sol = pc.return_atmosphere()
 
     with open('planetary_atmosphere_observations/Jupiter.yaml','r') as f:
@@ -206,8 +206,6 @@ def plot(pc, c1, c2):
     ax = axs[1]
     utils.plot_PT(c1, ax, lwc=4, color='k', lw=2, ls='-', label='Predicted',zorder=1)
 
-    utils.plot_PT(c2, ax, lwc=4, color='C4', lw=2, ls='-', label='Predicted\n(w/o C$_2$H$_2$ & C$_2$H$_6$)',zorder=0)
-
     P, T = np.loadtxt('input/Jupiter/Seiff1998.txt',skiprows=2).T
     ax.plot(T, P/1e3, 'C3', lw=3, label='Galileo probe\n(Seiff+1998)', alpha=1, zorder=500, ls=':')
 
@@ -229,21 +227,20 @@ def plot(pc, c1, c2):
 
 def main():
     pc = initialize()
-    # assert pc.find_steady_state()
+    assert pc.find_steady_state()
 
-    with open('results/Jupiter/atmosphere.pkl','rb') as f:
-        res = pickle.load(f)
-    pc.initialize_from_dict(res)
+    # with open('results/Jupiter/atmosphere.pkl','rb') as f:
+    #     res = pickle.load(f)
+    # pc.initialize_from_dict(res)
     
     # Save photochem result
-    # res = pc.model_state_to_dict()
-    # with open('results/Jupiter/atmosphere.pkl','wb') as f:
-    #     pickle.dump(res, f)
+    res = pc.model_state_to_dict()
+    with open('results/Jupiter/atmosphere.pkl','wb') as f:
+        pickle.dump(res, f)
 
     c1 = climate(pc, 1.0)
-    c2 = climate(pc, 1.0e-10)
 
-    plot(pc, c1, c2)
+    plot(pc, c1)
 
 if __name__ == "__main__":
     main()
