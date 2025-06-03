@@ -192,15 +192,15 @@ def plot(c1, c2, c3):
 
     # labels = 'Predicted (predicted clouds & predicted SO$_2$)'
 
-    colors = ['k','C0','0.6']
+    colors = ['k','0.6','C0']
     labels = [
         'Model w/ predicted haze',
-        'Model w/o haze',
         'Model w/\nTomasko+2008b haze',
+        'Model w/o haze',
     ]
     keys = ['(a)','(b)','(c)']
 
-    for i,c in enumerate([c1,c2,c3]):
+    for i,c in enumerate([c1,c3,c2]):
         ax = axs[0,i]
 
         ax.text(.5, 1.12, labels[i], \
