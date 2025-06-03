@@ -196,7 +196,7 @@ def plot(c1, c2, c3):
     labels = [
         'Model w/ predicted haze',
         'Model w/o haze',
-        'Model w/\nTomasko+2008a haze',
+        'Model w/\nTomasko+2008b haze',
     ]
     keys = ['(a)','(b)','(c)']
 
@@ -248,7 +248,7 @@ def plot(c1, c2, c3):
         P1 = get_P_from_T_rho(T_mid, rho)/1e6
         z1 = dat[:,0]
         P = 10.0**np.interp(z, z1, np.log10(P1))
-        ax.plot(F, P, c='C4', ls=':', label='Measure Solar\n(Tomasko+2008b)',lw=3,zorder=0)
+        ax.plot(F, P, c='C4', ls=':', label='Measure Solar\n(Tomasko+2008a)',lw=3,zorder=0)
 
         fdn = c.rad.wrk_sol.fdn_n[-1]/1e3*4
         fup = c.rad.wrk_sol.fup_n[-1]/1e3*4
