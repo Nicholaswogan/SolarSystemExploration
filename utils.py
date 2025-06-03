@@ -292,12 +292,12 @@ class AdiabatClimateRobust(AdiabatClimate):
                         **self.kwargs
                     )
 
-    def reinit_without_species_opacity(self, species, optype):
+    def reinit_without_species_opacity(self, species, optype, remove_from=['ir','solar']):
 
         settings_file = deepcopy(self.settings_file)
         optical_properties = yaml.safe_load(self.rad.opacities2yaml())['optical-properties']
         
-        for key in ['ir','solar']:
+        for key in remove_from:
             if optype == 'particle-xs':
                 names = [a['name'] for a in optical_properties[key]['opacities'][optype]]
                 tmp = [optical_properties[key]['opacities'][optype][i] for i in range(len(names)) if names[i] not in species]
