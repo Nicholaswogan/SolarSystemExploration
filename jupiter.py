@@ -24,7 +24,7 @@ def custom_binary_diffusion_fcn(mu_i, mubar, T):
         b = 3.64e-5*T**(1.75-1.0)*7.3439e21*np.sqrt(2.01594/mu_i)
     return b
 
-def initialize(special_CH4_diffusion=True):
+def initialize(special_CH4_diffusion=True, model_state_file=None):
 
     pc = gasgiants.EvoAtmosphereGasGiant(
         'input/zahnle_earth_HNOCHe.yaml',
@@ -99,6 +99,11 @@ def initialize(special_CH4_diffusion=True):
 
     if special_CH4_diffusion:
         pc.var.custom_binary_diffusion_fcn = custom_binary_diffusion_fcn
+
+    if model_state_file is not None:
+        with open(model_state_file,'rb') as f:
+            res = pickle.load(f)
+        pc.initialize_from_dict(res)
 
     return pc
 
@@ -223,15 +228,11 @@ def plot(pc, c1):
 
     plt.subplots_adjust(wspace=0.05)
 
-    plt.savefig('figures/jupiter.pdf',bbox_inches='tight')
+    plt.savefig('figures/jupiter_new.pdf',bbox_inches='tight')
 
 def main():
-    pc = initialize()
+    pc = initialize(model_state_file=None)
     assert pc.find_steady_state()
-
-    # with open('results/Jupiter/atmosphere.pkl','rb') as f:
-    #     res = pickle.load(f)
-    # pc.initialize_from_dict(res)
     
     # Save photochem result
     res = pc.model_state_to_dict()
