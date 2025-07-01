@@ -47,7 +47,7 @@ def initialize(atmosphere_file=None):
         'input/zahnle_earth_HNOC.yaml',
         'input/Mars/settings.yaml',
         'input/SunNow.txt',
-        atmosphere_file='results/Mars/atmosphere.txt',
+        atmosphere_file=atmosphere_file,
         data_dir='photochem_data'
     )
 
@@ -209,9 +209,9 @@ def plot(pc, c_low, c_mid, c_high):
 def main():
 
     # Photochemistry
-    pc = initialize('results/Mars/atmosphere.txt')
+    pc = initialize()
     assert pc.find_steady_state()
-    # pc.out2atmosphere_txt('results/Mars/atmosphere.txt',overwrite=True)
+    pc.out2atmosphere_txt('results/Mars/atmosphere.txt',overwrite=True)
 
     # Climate
     c_low = climate(pc, dust_case='low', P_top=5e-1)
