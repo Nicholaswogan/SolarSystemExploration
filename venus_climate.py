@@ -134,13 +134,13 @@ def plot(c1, c2, c3):
         P = 10.0**np.interp(z, np.append(0,c.z), np.log10(np.append(c.P_surf,c.P)))
         F = -(c.rad.wrk_ir.fdn_n - c.rad.wrk_ir.fup_n)/1e3
         F = np.append(F[0:-1:2],F[-1])
-        ax.plot(F, P/1e6, c=colors[i], lw=2, ls='--', label='Thermal (simulated)')
+        ax.plot(F, P/1e6, c=colors[i], lw=2, ls='--', label='Thermal (predicted)')
         
         z = np.append(0,c.z+c.dz/2)
         P = 10.0**np.interp(z, np.append(0,c.z), np.log10(np.append(c.P_surf,c.P)))
         F = (c.rad.wrk_sol.fdn_n - c.rad.wrk_sol.fup_n)/1e3
         F = np.append(F[0:-1:2],F[-1])
-        ax.plot(F, P/1e6, c=colors[i], lw=2, label='Solar (simulated)')
+        ax.plot(F, P/1e6, c=colors[i], lw=2, label='Solar (predicted)')
 
         z, F = np.loadtxt('input/Venus/TomaskoGlobalSolarFluxes.txt',skiprows=2).T
         z1, _, P1 = np.loadtxt('input/venus/venus_seiff1985.txt',skiprows=2).T
