@@ -28,16 +28,14 @@ def Kzz_titan(z):
 
 def get_zTKzzmix():
 
-    # The recommended temperature from Figure 9 in Waite et al. (2013)
-    dat = np.loadtxt('input/Titan/Waite2013Model.txt',skiprows=1)
-    z1 = dat[:,0]
-    T1 = dat[:,6]
+    z1, _, T1 = np.loadtxt('input/Titan/Moreno2012PT.txt',skiprows=2).T
+    # z in km here
 
     # Regrid
     z = np.linspace(0,1300,1000)
     T = np.interp(z, z1, T1)
     Kzz = np.array([Kzz_titan(a) for a in z])
-    z = z*1e5
+    z = z*1e5 # converted to cm here
 
     P_surf = 1.5e6
 

@@ -13,9 +13,8 @@ planet:
   hydrogen-escape: {type: diffusion limited}
   water: {fix-water-in-troposphere: false, gas-rainout: false, water-condensation: false}
 
-# To make the CH4 profile be correct
 particles:
-- {name: CH4aer, RH-condensation: 1.7}
+- {name: CH4aer, RH-condensation: 1.0}
 
 # Generally follows Loison et al. (2015)
 boundary-conditions:

@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 from utils import add_data_to_figure
 from utils import EvoAtmosphereRobust
 # from photochem.clima import AdiabatClimate
-from clima import AdiabatClimate
+from utils import AdiabatClimateRobust
 import utils
 import yaml
 from scipy import constants as const
@@ -64,7 +64,7 @@ def initialize(atmosphere_file=None):
 
 def climate(pc, dust_case, P_top=1.0):
 
-    c = AdiabatClimate(
+    c = AdiabatClimateRobust(
         'input/species_climate.yaml', 
         'input/Mars/settings_climate.yaml', 
         'input/SunNow.txt',
@@ -147,7 +147,7 @@ def plot(pc, c_low, c_mid, c_high):
     colors = ['C4','C5','C6','C2','C7','C9','C1','C3','C0']
     for i,sp in enumerate(species):
         ax.plot(sol[sp],sol['alt']/1e5,label=utils.species_to_latex(sp), c=colors[i], lw=2)
-        add_data_to_figure(sp, dat, ax, default_error=0.5, c=colors[i],marker='o',ls='',capsize=2,ms=3,elinewidth=0.9, capthick=0.9, alpha=0.9)
+        add_data_to_figure(sp, dat, ax, default_error=None, c=colors[i],marker='o',ls='',capsize=2,ms=3,elinewidth=0.9, capthick=0.9, alpha=0.9)
 
     # SVP
     ind = pc.dat.species_names.index('H2Oaer')
