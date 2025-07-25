@@ -515,6 +515,12 @@ def main():
     pc.set_particle_radii({'H2SO4aer': 2.0e-4, 'H2Oaer': 1.0e-3})
     assert pc.find_steady_state()
 
+    # Finally converge with these
+    pc.var.equilibrium_time = 1e17
+    pc.var.atol = 1e-15
+    pc.var.nsteps_before_reinit = 100000
+    assert pc.find_steady_state()
+
     pc.out2atmosphere_txt('results/Venus/atmosphere.txt',overwrite=True)
 
     # With Rimmer et al. chem.
@@ -529,6 +535,10 @@ def main():
     pc1.var.nsteps_before_reinit = 100000
     pc1.var.atol = 1e-18
     pc1.var.equilibrium_time = 1e13
+    assert pc1.find_steady_state()
+    pc1.var.equilibrium_time = 1e16
+    pc1.var.atol = 1e-16
+    pc1.var.nsteps_before_reinit = 100000
     assert pc1.find_steady_state()
     pc1.out2atmosphere_txt('results/Venus/atmosphere_rimmer.txt',overwrite=True)
 
