@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
-# from photochem.clima import AdiabatClimate
-from clima import AdiabatClimate
+from photochem.clima import AdiabatClimate
+# from clima import AdiabatClimate
 import utils
 import earth
 

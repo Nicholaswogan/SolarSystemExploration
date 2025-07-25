@@ -7,7 +7,7 @@ This repository reproduces most of the main text calculations in Wogan et al. (2
 If you do not have Anaconda on your system, install it here or in any way you perfer: https://www.anaconda.com/download. Next, run the following code to cerate a conda environment `solarsystem` with `photochem` v0.6.7 installed.
 
 ```sh
-conda create -n solarsystem -c conda-forge photochem=0.6.7 matplotlib requests
+conda create -n solarsystem -c conda-forge photochem=0.6.7 matplotlib
 ```
 
 ## Step 2: Run the code

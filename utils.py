@@ -6,8 +6,8 @@ from scipy import integrate
 from copy import deepcopy
 from photochem import EvoAtmosphere, PhotoException
 from tempfile import NamedTemporaryFile
-# from photochem.clima import AdiabatClimate
-from clima import AdiabatClimate
+from photochem.clima import AdiabatClimate
+# from clima import AdiabatClimate
 import yaml
 import re
 
