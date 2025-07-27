@@ -1,6 +1,4 @@
-# Reproducing Wogan et al. (2025)
-
-Version 1.0.0
+# Reproducing Wogan et al. (2025), Version 1.0.0 
 
 This repository reproduces most of the main text calculations in Wogan et al. (2025). The article formally publishes the [Photochem](https://github.com/Nicholaswogan/photochem) software package, and benchmarks the model against the observed composition and climates of many of the Solar System atmospheres and one exoplanet (WASP-39b). To reproduce our calculations, follow these instructions:
 
