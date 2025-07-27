@@ -536,7 +536,7 @@ def main():
     pc1.var.atol = 1e-18
     pc1.var.equilibrium_time = 1e13
     assert pc1.find_steady_state()
-    pc1.var.equilibrium_time = 1e16
+    pc1.var.equilibrium_time = 1e14
     pc1.var.atol = 1e-16
     pc1.var.nsteps_before_reinit = 100000
     assert pc1.find_steady_state()
