@@ -15,10 +15,10 @@ import h5py
 import pickle
 
 def create_stellar_fluxes():
-    _ = stars.solar_spectrum(
-        outputfile='input/SunNow.txt',
-        stellar_flux=1367,
-    )
+    # _ = stars.solar_spectrum(
+    #     outputfile='input/SunNow.txt',
+    #     stellar_flux=1367,
+    # )
 
     # WASP39b
     wv, F = np.loadtxt('input/WASP39b/sflux-wasp39-frances.txt',skiprows=1).T
