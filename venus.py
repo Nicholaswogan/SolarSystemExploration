@@ -363,7 +363,7 @@ def initialize(reaction_file='input/zahnle_earth.yaml', atmosphere_file=None, uv
         'input/Venus/settings.yaml',
         'input/SunNow.txt',
         atmosphere_file,
-        data_dir='photochem_data'
+        data_dir=None
     )
 
     if atmosphere_file is None:

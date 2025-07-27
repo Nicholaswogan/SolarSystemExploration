@@ -19,7 +19,7 @@ def us_standard_atmosphere(z):
     T = np.array(T)
     return np.interp(z, zs, T)
 
-def climate(pc, data_dir='photochem_data', O3_col=None):
+def climate(pc, data_dir=None, O3_col=None):
 
     c = AdiabatClimate(
         'input/species_climate.yaml', 

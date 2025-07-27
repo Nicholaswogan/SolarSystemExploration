@@ -131,7 +131,7 @@ def main():
     # Nominal case
     pc1 = initialize(
         'input/zahnle_earth_HNOCHeS.yaml', 
-        'photochem_data', 
+        None, 
         model_state_file=None
     )
     assert pc1.find_steady_state()

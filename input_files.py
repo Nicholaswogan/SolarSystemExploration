@@ -1,5 +1,7 @@
 import numpy as np
 from astropy import constants
+from photochem import zahnle_earth
+from photochem.utils import species_file_for_climate
 from photochem.utils import stars
 from photochem.utils import zahnle_rx_and_thermo_files, resave_mechanism_with_atoms
 from photochem.utils import vulcan2yaml
@@ -44,6 +46,9 @@ def get_solarsystem_observations():
     os.rename('planetary_atmosphere_observations-'+commit,'planetary_atmosphere_observations')
 
 def reaction_mechanisms():
+
+    shutil.copy(zahnle_earth,'input/zahnle_earth.yaml')
+    shutil.copy(zahnle_earth.replace('zahnle_earth.yaml','condensate_thermo.yaml'),'input/condensate_thermo.yaml')
 
     # Venus
     with open('input/zahnle_earth.yaml','r') as f:
@@ -119,8 +124,7 @@ def reaction_mechanisms():
     # Make reactions file
     vulcan2yaml(
         'input/WASP39b/VULCAN/SNCHO_photo_network.txt',
-        'VULCAN/thermo',
-        'photochem_data'
+        'VULCAN/thermo'
     )
     # Correct He duplicate reaction
     with open('SNCHO_photo_network.yaml','r') as f:
@@ -142,34 +146,6 @@ def reaction_mechanisms():
     with h5py.File("vulcandata/xsections/bins.h5", "w") as f:
         dset = f.create_dataset("wavl", wavl.shape, 'f')
         dset[:] = wavl
-
-# def vulcan_jupiter():
-
-#     if os.path.isdir('VULCAN'):
-#         shutil.rmtree('VULCAN')
-#     commit = 'f3d7291d69b356a38f18d70a39c41e143eb85cee'
-#     url = 'https://github.com/exoclime/VULCAN/archive/'+commit+'.zip'
-#     r = requests.get(url)
-#     z = zipfile.ZipFile(io.BytesIO(r.content))
-#     z.extractall("./")
-#     os.rename('VULCAN-'+commit,'VULCAN')
-#     # Make reactions file
-#     vulcan2yaml(
-#         'VULCAN/thermo/NCHO_photo_network_lowT_Jupiter.txt',
-#         'VULCAN/thermo',
-#         'photochem_data'
-#     )
-#     # Correct He duplicate reaction
-#     with open('NCHO_photo_network_lowT_Jupiter.yaml','r') as f:
-#         dat1 = yaml.load(f, Loader)
-#     for i in range(len(dat1['reactions'])):
-#         if dat1['reactions'][i]['equation'] == 'He <=> He':
-#             dat1['reactions'][i]['equation'] = 'He => He'
-#     dat1 = FormatReactions_main(dat1)
-#     with open('NCHO_photo_network_lowT_Jupiter.yaml','w') as f:
-#         yaml.dump(dat1, f, MyDumper)
-#     # Delete VULCAN
-#     shutil.rmtree('VULCAN')
 
 def generate_thermo(mechanism_file, thermo_file, outfile, atoms_names=None, exclude_species=[], remove_particles=False):
 

@@ -112,7 +112,7 @@ def climate(pc, P_top=1.0, c_guess=None, haze=True, tomasko_solar_haze=False, C2
         'input/species_climate.yaml', 
         'input/Titan/settings_climate.yaml', 
         'input/SunNow.txt',
-        data_dir='photochem_data'
+        data_dir=None
     )
     
     # Mixing ratios

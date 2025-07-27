@@ -48,7 +48,7 @@ def initialize(atmosphere_file=None):
         'input/Mars/settings.yaml',
         'input/SunNow.txt',
         atmosphere_file=atmosphere_file,
-        data_dir='photochem_data'
+        data_dir=None
     )
 
     if atmosphere_file is None:
@@ -68,7 +68,7 @@ def climate(pc, dust_case, P_top=1.0):
         'input/species_climate.yaml', 
         'input/Mars/settings_climate.yaml', 
         'input/SunNow.txt',
-        data_dir='photochem_data'
+        data_dir=None
     )
     
     # Composition

@@ -34,7 +34,7 @@ def initialize(special_CH4_diffusion=True, model_state_file=None):
         nz=200,
         photon_scale_factor=0.039,
         thermo_file='input/zahnle_earth_HNOCHe_thermo.yaml',
-        data_dir='photochem_data'
+        data_dir=None
     )
     pc.gdat.TOA_pressure_avg = 3e-3
 
@@ -112,7 +112,7 @@ def climate(pc, C2H6_C2H2_factor=1):
         'input/species_climate.yaml',
         'input/Jupiter/settings_climate.yaml',
         'input/SunNow.txt',
-        data_dir='photochem_data'
+        data_dir=None
     )
 
     # Mixing ratios

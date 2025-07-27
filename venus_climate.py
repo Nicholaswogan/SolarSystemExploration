@@ -33,7 +33,7 @@ def climate(pc, clouds='crisp', SO2_correction=False):
         'input/species_climate.yaml', 
         'input/Venus/settings_climate.yaml', 
         'input/SunNow.txt',
-        data_dir='photochem_data'
+        data_dir=None
     )
 
     # Mixing ratios

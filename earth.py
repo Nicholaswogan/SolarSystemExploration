@@ -34,7 +34,7 @@ def initialize(atmosphere_file=None):
         'input/Earth/settings.yaml',
         'input/SunNow.txt',
         atmosphere_file,
-        data_dir='photochem_data'
+        data_dir=None
     )
 
     if atmosphere_file is None:
