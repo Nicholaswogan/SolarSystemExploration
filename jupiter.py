@@ -228,7 +228,7 @@ def plot(pc, c1):
 
     plt.subplots_adjust(wspace=0.05)
 
-    plt.savefig('figures/jupiter_new.pdf',bbox_inches='tight')
+    plt.savefig('figures/jupiter.pdf',bbox_inches='tight')
 
 def main():
     pc = initialize(model_state_file=None)
